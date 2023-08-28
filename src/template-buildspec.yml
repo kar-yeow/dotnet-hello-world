@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - apt install -y aws-cdk
+  pre_build:
+    commands:
+      - echo Build dotnet application on `date`
+  build:
+    commands:
+      - pwd
+      - dotnet build src\MyCdk
+      - cdk synth
+      - dir cdk.output
+  post_build:
+    commands:
+      - echo Saving to template to artifact S3 bucket ...
+artifacts:
+  name: aws template
+  files:
+    - ./cdk.out/MyCdkStack.template.json
