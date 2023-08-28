@@ -1,0 +1,48 @@
+version: 0.2
+
+env:
+  parameter-store:
+    USER_NAME: arn:aws:ssm:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:parameter/UserName
+  secrets-manager:
+    ARTIFACTORY_TOKEN: arn:aws:secretsmanager:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:secret:secrets-name:TOKEN
+
+phases:
+  install:
+    commands:
+      - apt install dotnet-sdk
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo dummy user=$USER_NAME token=$ARTIFACTORY_TOKEN...
+      - pwd
+      - dotnet build src/MyApp -c Releases
+      - dotnet publish src/MyApp -c Releases -o publish
+      - ver=0.0.1
+      - name=dotnet-hello-world:0.0.1-$CODEBUILD_RESOLVED_SOURCE_VERSION
+      - echo Building the Docker image $name...          
+      - docker build -t $name .
+      - docker tag $name $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$name
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - docker save $name -o hello.tar 
+      - echo Pushing the Docker image $name...
+      - |
+        if [ $SAVE_IMAGE = "true" ]; then
+          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$name
+          docker push $aname
+        fi 
+    finally:
+      - |
+        if [ $SAVE_IMAGE != "true"]; then
+          docker rmi $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$name
+        fi
+artifacts:
+  name: image tar file
+  files:
+    - hello.tar
+    
