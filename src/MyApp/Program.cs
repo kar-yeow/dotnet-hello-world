@@ -1,6 +1,6 @@
 ﻿var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
-
-app.MapGet("/", () => "Hello World!");
+var what = System.Environment.GetEnvironmentVariable("HELLO_VAR");
+app.MapGet("/", () => $"Hello World {what}!");
 
 app.Run();
