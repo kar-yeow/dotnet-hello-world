@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   parameter-store:
-    USER_NAME: arn:aws:ssm:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:parameter/UserName
+    ARTIFACTORY_USER: arn:aws:ssm:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:parameter/UserName
   secrets-manager:
     ARTIFACTORY_TOKEN: arn:aws:secretsmanager:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:secret:secrets-name:TOKEN
 
@@ -17,11 +17,10 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - echo dummy user=$USER_NAME token=$ARTIFACTORY_TOKEN...
+      - echo dummy user=$ARTIFACTORY_USER token=$ARTIFACTORY_TOKEN...
       - pwd
       - dotnet build src/MyApp -c Releases
       - dotnet publish src/MyApp -c Releases -o publish
-      - ver=0.0.1
       - name=dotnet-hello-world:0.0.1-$CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Building the Docker image $name...          
       - docker build -t $name .

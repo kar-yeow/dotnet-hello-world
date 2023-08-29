@@ -11,7 +11,7 @@ phases:
     commands:
       - pwd
       - dotnet build src\MyCdk
-      - cdk synth
+      - cdk synth MyAppRunnerStack
       - dir cdk.output
   post_build:
     commands:
@@ -19,4 +19,4 @@ phases:
 artifacts:
   name: aws template
   files:
-    - ./cdk.out/MyCdkStack.template.json
+    - ./cdk.out/MyAppRunnerStack.template.json

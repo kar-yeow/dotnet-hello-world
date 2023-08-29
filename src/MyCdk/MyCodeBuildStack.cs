@@ -1,16 +1,13 @@
 ﻿using Amazon.CDK;
-using Amazon.CDK.AWS.SecretsManager;
 using Constructs;
 using Amazon.CDK.AWS.CodeBuild;
-using System;
-using System.Collections.Generic;
 using Amazon.CDK.AWS.S3;
 
 namespace MyCdk
 {
-    internal class MyCdkStack : Stack
+    internal class MyCodeBuildStack : Stack
     {
-        internal MyCdkStack(Construct scope, string id, IStackProps? props = null) : base(scope, id, props)
+        internal MyCodeBuildStack(Construct scope, string id, IStackProps? props = null) : base(scope, id, props)
         {
             var epmCode = new CfnParameter(this, "empcode", new CfnParameterProps
             {
