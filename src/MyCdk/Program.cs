@@ -7,9 +7,19 @@ namespace MyCdk
         public static void Main(string[] args)
         {
             var app = new App();
-            new MyCdkStack(app, "MyCdkStack", new StackProps
+            new MyCodeBuildStack(app, "MyCodeBuildStack", new StackProps
             {
-                StackName = $"deploy-codebuild-stack",
+                StackName = $"build-image-stack",
+                Env = new Amazon.CDK.Environment
+                {
+                    Account = System.Environment.GetEnvironmentVariable("AWS_ACCOUNT"),
+                    Region = System.Environment.GetEnvironmentVariable("AWS_REGION")
+                }
+            });
+
+            new MyAppRunnerStack(app, "MyAppRunnerStack", new StackProps
+            {
+                StackName = $"build-template-stack",
                 Env = new Amazon.CDK.Environment
                 {
                     Account = System.Environment.GetEnvironmentVariable("AWS_ACCOUNT"),
