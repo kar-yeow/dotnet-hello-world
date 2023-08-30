@@ -40,9 +40,18 @@ namespace MyCdk
                         ImageRepositoryType = "ECR",
                         ImageConfiguration = new ImageConfigurationProperty
                         {
-                            Port = "8080"
+                            Port = "5050"
                         }
                     }
+                },
+                HealthCheckConfiguration = new HealthCheckConfigurationProperty
+                {
+                    Protocol = "HTTP",
+                    Path = "/",
+                    HealthyThreshold = 1,
+                    UnhealthyThreshold = 5,
+                    Timeout = 2,
+                    Interval = 10,
                 }
             });
 
