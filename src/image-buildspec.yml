@@ -18,9 +18,9 @@ phases:
     commands:
       - echo Build started on `date`
       - echo dummy user=$ARTIFACTORY_USER token=$ARTIFACTORY_TOKEN...
-      - pwd
-      - dotnet build src/MyApp -c Releases
-      - dotnet publish src/MyApp -c Releases -o publish
+      - cd src
+      - dotnet build MyApp -c Releases
+      - dotnet publish MyApp -c Releases -o publish
       - name=dotnet-hello-world:0.0.1-$CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Building the Docker image $name...          
       - docker build -t $name .
