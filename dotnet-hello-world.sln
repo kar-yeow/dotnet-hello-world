@@ -9,9 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCdk", "src\MyCdk\MyCdk.cs
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DBF2990F-97C1-40AC-A9F5-77776D86A5C8}"
 	ProjectSection(SolutionItems) = preProject
+		src\cdk.json = src\cdk.json
 		src\Dockerfile = src\Dockerfile
-		src\template-buildspec.yml = src\template-buildspec.yml
 		src\image-buildspec.yml = src\image-buildspec.yml
+		src\template-buildspec.yml = src\template-buildspec.yml
 	EndProjectSection
 EndProject
 Global
