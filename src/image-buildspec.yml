@@ -19,7 +19,8 @@ phases:
       - echo Build started on `date`
       - echo dummy user=$ARTIFACTORY_USER token=$ARTIFACTORY_TOKEN...
       - cd src
-      - dotnet build MyApp -c Releases
+      - dotnet build MyApp
+      - dotnet test MyApp.Test --logger "trx;LogFileName=hello-world.trx"
       - dotnet publish MyApp -c Releases -o publish
       - name=dotnet-hello-world:0.0.1-$CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Building the Docker image $name...          
@@ -32,15 +33,21 @@ phases:
         if [ $SAVE_IMAGE = "true" ]; then
           docker tag $name $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$name
           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$name
-          docker save $name -o hello.tar 
+          docker save $name -o hello-world.tar 
         fi 
     finally:
       - |
         if [ $SAVE_IMAGE != "true"]; then
           docker rmi $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$name
         fi
+
+reports:
+  hello-report-group:
+    files:
+      - hello-world.trx
+
 artifacts:
   name: image tar file
   files:
-    - hello.tar
+    - hello-world.tar
     
