@@ -10,7 +10,8 @@ phases:
   build:
     commands:
       - pwd
-      - dotnet build src\MyCdk
+      - cd src
+      - dotnet build MyCdk
       - cdk synth MyAppRunnerStack
       - dir cdk.output
   post_build:

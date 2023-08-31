@@ -24,7 +24,7 @@ namespace MyCdk
                 Type = "String",
                 Description = "Save build in ECR and Artifactory"
             });
-            this.Tags.SetTag("epmcode", epmCode.ValueAsString);
+            Tags.SetTag("epmcode", epmCode.ValueAsString);
 
             var bucket = new Bucket(this, "my-bucket", new BucketProps
             {
@@ -58,7 +58,8 @@ namespace MyCdk
                 Source = Source.GitHub(new GitHubSourceProps
                 {
                     Owner = "kar-yeow",
-                    Repo = "dotnet-hello-world"
+                    Repo = "dotnet-hello-world",
+                    Webhook = true
                 }),
                 Artifacts = Artifacts.S3(new S3ArtifactsProps
                 {
@@ -83,12 +84,12 @@ namespace MyCdk
                 })
             });
 
-            new CfnOutput(this, "build container image", new CfnOutputProps
+            _ = new CfnOutput(this, "build container image", new CfnOutputProps
             {
                 Value = $"{buildImage.ProjectName} {buildImage.Stack.StackId} {bucket.BucketArn} done."
             });
 
-            new CfnOutput(this, "build deploy template", new CfnOutputProps
+            _ = new CfnOutput(this, "build deploy template", new CfnOutputProps
             {
                 Value = $"{deployTemplate.ProjectName} {deployTemplate.Stack.StackId} {bucket.BucketArn} done."
             });

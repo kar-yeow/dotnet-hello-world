@@ -9,7 +9,7 @@ env:
 phases:
   install:
     commands:
-      - apt install dotnet-sdk
+      - dnf install dotnet-sdk-6.0
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
@@ -24,16 +24,15 @@ phases:
       - name=dotnet-hello-world:0.0.1-$CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Building the Docker image $name...          
       - docker build -t $name .
-      - docker tag $name $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$name
   post_build:
     commands:
       - echo Build completed on `date`
-      - docker save $name -o hello.tar 
       - echo Pushing the Docker image $name...
       - |
         if [ $SAVE_IMAGE = "true" ]; then
+          docker tag $name $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$name
           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$name
-          docker push $aname
+          docker save $name -o hello.tar 
         fi 
     finally:
       - |
