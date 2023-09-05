@@ -2,6 +2,7 @@
 using Constructs;
 using Amazon.CDK.AWS.CodeBuild;
 using Amazon.CDK.AWS.S3;
+using Amazon.CDK.AWS.CodeStarNotifications;
 
 namespace MyCdk
 {
