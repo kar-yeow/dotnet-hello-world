@@ -2,12 +2,13 @@
 using Constructs;
 using Amazon.CDK.AWS.CodeBuild;
 using Amazon.CDK.AWS.S3;
+using Amazon.CDK.AWS.CodeStarNotifications;
 
 namespace MyCdk
 {
-    internal class MyCodeBuildStack : Stack
+    public class MyCodeBuildStack : Stack
     {
-        internal MyCodeBuildStack(Construct scope, string id, IStackProps? props = null) : base(scope, id, props)
+        public MyCodeBuildStack(Construct scope, string id, IStackProps? props = null) : base(scope, id, props)
         {
             var epmCode = new CfnParameter(this, "empcode", new CfnParameterProps
             {

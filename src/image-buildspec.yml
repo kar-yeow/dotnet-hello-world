@@ -1,6 +1,8 @@
 version: 0.2
 
 env:
+  variables:
+    APP_VERSION: 0.0.1
   parameter-store:
     ARTIFACTORY_USER: arn:aws:ssm:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:parameter/UserName
   secrets-manager:
@@ -21,8 +23,8 @@ phases:
       - cd src
       - dotnet build MyApp
       - dotnet test MyApp.Test --logger "trx;LogFileName=hello-world.trx"
-      - dotnet publish MyApp -c Releases -o publish
-      - name=dotnet-hello-world:0.0.1-$CODEBUILD_RESOLVED_SOURCE_VERSION
+      - dotnet publish MyApp -c Release -p:UseAppHost=false -o publish
+      - name=dotnet-hello-world:$APP_VERSION-$CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Building the Docker image $name...          
       - docker build -t $name .
   post_build:
@@ -47,7 +49,7 @@ reports:
       - hello-world.trx
 
 artifacts:
-  name: image tar file
+  name: hello-$APP_VERSION
   files:
     - hello-world.tar
     

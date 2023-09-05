@@ -5,9 +5,9 @@ using static Amazon.CDK.AWS.AppRunner.CfnService;
 
 namespace MyCdk
 {
-    internal class MyAppRunnerStack : Stack
+    public class MyAppRunnerStack : Stack
     {
-        internal MyAppRunnerStack(Construct scope, string id, IStackProps? props = null) : base(scope, id, props)
+        public MyAppRunnerStack(Construct scope, string id, IStackProps? props = null) : base(scope, id, props)
         {
             var epmCode = new CfnParameter(this, "empcode", new CfnParameterProps
             {
@@ -19,7 +19,7 @@ namespace MyCdk
                 Type = "String",
                 Description = "Application software version to deploy"
             });
-            this.Tags.SetTag("epmcode", epmCode.ValueAsString);
+            Tags.SetTag("epmcode", epmCode.ValueAsString);
 
             var autoScalingConfiguration = new CfnAutoScalingConfiguration(this, "app-runner-auto-scaling", new CfnAutoScalingConfigurationProps
             {
