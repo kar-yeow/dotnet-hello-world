@@ -5,9 +5,9 @@ using Amazon.CDK.AWS.S3;
 
 namespace MyCdk
 {
-    internal class MyCodeBuildStack : Stack
+    public class MyCodeBuildStack : Stack
     {
-        internal MyCodeBuildStack(Construct scope, string id, IStackProps? props = null) : base(scope, id, props)
+        public MyCodeBuildStack(Construct scope, string id, IStackProps? props = null) : base(scope, id, props)
         {
             var epmCode = new CfnParameter(this, "empcode", new CfnParameterProps
             {

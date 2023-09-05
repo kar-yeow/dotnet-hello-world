@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     commands:
-      - apt install -y aws-cdk
+      - npm install -g aws-cdk
   pre_build:
     commands:
       - echo Build dotnet application on `date`
@@ -12,11 +12,18 @@ phases:
       - pwd
       - cd src
       - dotnet build MyCdk
+      - dotnet test MyCdk.Test --logger "trx;LogFileName=mycdk.trx"
       - cdk synth MyAppRunnerStack
       - dir cdk.output
   post_build:
     commands:
       - echo Saving to template to artifact S3 bucket ...
+
+reports:
+  hello-report-group:
+    files:
+      - MyCdk.Test/TestResults/mycdk.trx
+
 artifacts:
   name: aws template
   files:
