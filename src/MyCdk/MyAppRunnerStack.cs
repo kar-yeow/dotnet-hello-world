@@ -22,26 +22,26 @@ namespace MyCdk
             });
             Tags.SetTag("epmcode", epmCode.ValueAsString);
 
-            var autoScalingConfiguration = new CfnAutoScalingConfiguration(this, "app-runner-auto-scaling", new CfnAutoScalingConfigurationProps
+            var autoScalingConfiguration = new CfnAutoScalingConfiguration(this, "DassHelloAppRunnerAutoScaling", new CfnAutoScalingConfigurationProps
             {
-                AutoScalingConfigurationName = "my-auto-scaling",
+                AutoScalingConfigurationName = "dass-hello-auto-scaling",
                 MaxConcurrency = 100,
                 MaxSize = 25,
                 MinSize = 1
             });
 
-            var instanceRole = new Role(this, "AppRunnerInstanceRole", new RoleProps
+            var instanceRole = new Role(this, "DassHelloAppRunnerInstanceRole", new RoleProps
             {
                 AssumedBy = new ServicePrincipal("tasks.apprunner.amazonaws.com")
             });
 
-            var accessRole = new Role(this, "AppRunnerBuildRole", new RoleProps
+            var accessRole = new Role(this, "DassHelloAppRunnerBuildRole", new RoleProps
             {
                 AssumedBy = new ServicePrincipal("build.apprunner.amazonaws.com")
             });
 
-            var appRunner = new CfnService(this, "app-runner-template", new CfnServiceProps{
-                ServiceName = "hello-world-app-runner-service",
+            var appRunner = new CfnService(this, "DassHelloAppRunnerTemplate", new CfnServiceProps{
+                ServiceName = "dass-cfst-hello-world-app-runner-service",
                 AutoScalingConfigurationArn = autoScalingConfiguration.AttrAutoScalingConfigurationArn,
                 InstanceConfiguration = new InstanceConfigurationProperty
                 {
