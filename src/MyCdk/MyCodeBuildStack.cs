@@ -3,6 +3,7 @@ using Constructs;
 using Amazon.CDK.AWS.CodeBuild;
 using Amazon.CDK.AWS.S3;
 using Amazon.CDK.AWS.CodeStarNotifications;
+using Amazon.CDK.AWS.IAM;
 
 namespace MyCdk
 {
@@ -27,19 +28,26 @@ namespace MyCdk
             });
             Tags.SetTag("epmcode", epmCode.ValueAsString);
 
-            var bucket = new Bucket(this, "my-bucket", new BucketProps
+            var bucket = new Bucket(this, "dass-hello-bucket", new BucketProps
             {
-                BucketName = "my-bucket"
+                BucketName = "dass-hello-bucket"
+            });
+            var role = Role.FromRoleArn(this, "BuildContainerRole", "arn:aws:iam::037690295447:role/ato-role-dass-codebuild-service", new FromRoleArnOptions
+            {
+                Mutable = false,
+                AddGrantsToResources = false
             });
 
             var buildImage = new Project(this, "BuildContainerImage", new ProjectProps
             {
+                Role = role,
                 BuildSpec = BuildSpec.FromSourceFilename("../image-buildspec.yml"),
-                ProjectName = "build-container-image",
+                ProjectName = "dass-build-container-hello-cfst-image",
                 Environment = new BuildEnvironment
                 {
                     ComputeType = ComputeType.MEDIUM,
-                    BuildImage = LinuxBuildImage.AMAZON_LINUX_2_5
+                    BuildImage = LinuxBuildImage.AMAZON_LINUX_2_5,
+                    Privileged = true
                 },
                 EnvironmentVariables = new Dictionary<string, IBuildEnvironmentVariable>
                 {
@@ -71,8 +79,14 @@ namespace MyCdk
 
             var deployTemplate = new Project(this, "BuildDeployTemplate", new ProjectProps
             {
-                ProjectName = "build-deploy-template",
+                Role = role,
+                ProjectName = "dass-build-deploy-hello-cfst-template",
                 BuildSpec = BuildSpec.FromSourceFilename("../template-buildspec.yml"),
+                Environment = new BuildEnvironment
+                {
+                    ComputeType = ComputeType.MEDIUM,
+                    BuildImage = LinuxBuildImage.AMAZON_LINUX_2_5
+                },
                 Source = Source.GitHub(new GitHubSourceProps
                 {
                     Owner = "kar-yeow",

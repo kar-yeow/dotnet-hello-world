@@ -2,6 +2,7 @@
 using Constructs;
 using Amazon.CDK.AWS.AppRunner;
 using static Amazon.CDK.AWS.AppRunner.CfnService;
+using Amazon.CDK.AWS.IAM;
 
 namespace MyCdk
 {
@@ -29,11 +30,31 @@ namespace MyCdk
                 MinSize = 1
             });
 
+            var instanceRole = new Role(this, "AppRunnerInstanceRole", new RoleProps
+            {
+                AssumedBy = new ServicePrincipal("tasks.apprunner.amazonaws.com")
+            });
+
+            var accessRole = new Role(this, "AppRunnerBuildRole", new RoleProps
+            {
+                AssumedBy = new ServicePrincipal("build.apprunner.amazonaws.com")
+            });
+
             var appRunner = new CfnService(this, "app-runner-template", new CfnServiceProps{
                 ServiceName = "hello-world-app-runner-service",
                 AutoScalingConfigurationArn = autoScalingConfiguration.AttrAutoScalingConfigurationArn,
+                InstanceConfiguration = new InstanceConfigurationProperty
+                {
+                    InstanceRoleArn = instanceRole.RoleArn,
+                    Cpu = "2 vCPU",
+                    Memory = "4 GB",
+                },
                 SourceConfiguration = new SourceConfigurationProperty
                 {
+                    AuthenticationConfiguration = new AuthenticationConfigurationProperty 
+                    {
+                        AccessRoleArn = accessRole.RoleArn
+                    },
                     ImageRepository = new ImageRepositoryProperty
                     {
                         ImageIdentifier = $"{this.Account}.dkr.ecr.{this.Region}.amazonaws.com/dotnet-hello-world:{appVersion.ValueAsString}",
