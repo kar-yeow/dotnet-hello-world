@@ -2,7 +2,6 @@
 using Constructs;
 using Amazon.CDK.AWS.CodeBuild;
 using Amazon.CDK.AWS.S3;
-using Amazon.CDK.AWS.CodeStarNotifications;
 using Amazon.CDK.AWS.IAM;
 
 namespace MyCdk
@@ -41,7 +40,7 @@ namespace MyCdk
             var buildImage = new Project(this, "BuildContainerImage", new ProjectProps
             {
                 Role = role,
-                BuildSpec = BuildSpec.FromSourceFilename("../image-buildspec.yml"),
+                BuildSpec = BuildSpec.FromSourceFilename("src/image-buildspec.yml"),
                 ProjectName = "dass-build-container-hello-cfst-image",
                 Environment = new BuildEnvironment
                 {
@@ -81,7 +80,7 @@ namespace MyCdk
             {
                 Role = role,
                 ProjectName = "dass-build-deploy-hello-cfst-template",
-                BuildSpec = BuildSpec.FromSourceFilename("../template-buildspec.yml"),
+                BuildSpec = BuildSpec.FromSourceFilename("src/template-buildspec.yml"),
                 Environment = new BuildEnvironment
                 {
                     ComputeType = ComputeType.MEDIUM,

@@ -3,10 +3,10 @@ version: 0.2
 env:
   variables:
     APP_VERSION: 0.0.1
-  parameter-store:
-    ARTIFACTORY_USER: arn:aws:ssm:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:parameter/UserName
-  secrets-manager:
-    ARTIFACTORY_TOKEN: arn:aws:secretsmanager:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:secret:secrets-name:TOKEN
+#  parameter-store:
+#    ARTIFACTORY_USER: arn:aws:ssm:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:parameter/UserName
+#  secrets-manager:
+#    ARTIFACTORY_TOKEN: arn:aws:secretsmanager:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:secret:secrets-name:TOKEN
 
 phases:
   install:
@@ -19,7 +19,7 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - echo dummy user=$ARTIFACTORY_USER token=$ARTIFACTORY_TOKEN...
+#      - echo dummy user=$ARTIFACTORY_USER token=$ARTIFACTORY_TOKEN...
       - cd src
       - dotnet build MyApp
       - dotnet test MyApp.Test --logger "trx;LogFileName=hello-world.trx"
