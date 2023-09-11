@@ -3,8 +3,8 @@ version: 0.2
 env:
   variables:
     APP_VERSION: 0.0.1
-    ECR_REPO: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/hello
-    SNS_TOPIC: dass-hello-topic
+    ECR_REPO: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/hello
+    SNS_TOPIC: arn:aws:sns:${AWS_DEFAULT_REGION}:${AWS_ACCOUNT_ID}:dass-hello-topic
 #  parameter-store:
 #    ARTIFACTORY_USER: arn:aws:ssm:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:parameter/UserName
 #  secrets-manager:
@@ -17,9 +17,10 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - echo $AWS_DEFAULT_REGION $AWS_ACCOUNT_ID $DUMMY_PARAM $DUMMY_SECRET
+      - echo $AWS_DEFAULT_REGION $AWS_ACCOUNT_ID $DUMMY_PARAM $DUMMY_SECRET 
+      - echo $ECR_REPO $SNS_TOPIC
 #      - echo $ARTIFACTORY_TOKEN
-#      - aws ecr get-login-password
+      - echo ${aws ecr get-login-password}
 #      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
   build:
     commands:
@@ -40,11 +41,11 @@ phases:
 #      - docker save $name -o hello-world.tar 
       - |
         if [ $SAVE_IMAGE = "true" ]; then
-          echo $(aws ecr get-login --no-include-email)
+          echo $(aws ecr get-login-password)
           echo docker tag $name $ECR_REPO/$name
           echo docker push $ECR_REPO/$name
         fi 
-      - aws sns publish --topic-arn ${SNS_TOPIC} --message "Build $CODEBUILD_BUILD_ID done."
+      - aws sns publish --topic-arn ${SNS_TOPIC} --message "Build ${CODEBUILD_BUILD_ID} done."
 #    finally:
 #      - |
 #        if [ $SAVE_IMAGE != "true"]; then
