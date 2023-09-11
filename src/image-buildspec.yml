@@ -9,9 +9,9 @@ env:
 #    ARTIFACTORY_TOKEN: arn:aws:secretsmanager:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:secret:secrets-name:TOKEN
 
 phases:
-  install:
-    commands:
-      - dnf install dotnet-sdk-6.0
+#  install:
+#    commands:
+#      - dnf install dotnet-sdk-6.0
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
