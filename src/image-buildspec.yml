@@ -47,7 +47,7 @@ phases:
         fi
 
 reports:
-  codebuild-report-group:
+  arn:aws:codebuild:ap-southeast-2:037690295447:report-group/codebuild-report-group:
     files:
       - hello-world.trx
 
