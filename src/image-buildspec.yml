@@ -47,12 +47,12 @@ phases:
         fi
 
 reports:
-  hello-report-group:
+  codebuild-report-group:
     files:
       - hello-world.trx
 
-artifacts:
-  name: hello-$APP_VERSION
-  files:
-    - hello-world.tar
+#artifacts:
+#  name: hello-$APP_VERSION
+#  files:
+#    - hello-world.tar
     
