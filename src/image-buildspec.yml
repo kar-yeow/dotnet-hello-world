@@ -15,8 +15,7 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - echo $AWS_DEFAULT_REGION
-      - echo $AWS_ACCOUNT_ID
+      - echo $AWS_DEFAULT_REGION $AWS_ACCOUNT_ID $DUMMY_PARAM $DUMMY_SECRET
 #      - echo $ARTIFACTORY_TOKEN
 #      - aws ecr get-login-password
 #      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
@@ -56,5 +55,5 @@ artifacts:
   name: hello-$APP_VERSION
   files:
     - src/hello-world.tar
-    - MyApp.Test/TestResults/hello-world.trx
+    - src/MyApp.Test/TestResults/hello-world.trx
     
