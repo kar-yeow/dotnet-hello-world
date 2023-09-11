@@ -3,15 +3,17 @@ version: 0.2
 env:
   variables:
     APP_VERSION: 0.0.1
+    ECR_REPO: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/hello
+    SNS_TOPIC: dass-hello-topic
 #  parameter-store:
 #    ARTIFACTORY_USER: arn:aws:ssm:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:parameter/UserName
 #  secrets-manager:
 #    ARTIFACTORY_TOKEN: dass/DummyToken
 
 phases:
-#  install:
-#    commands:
-#      - dnf install dotnet-sdk-6.0
+  install:
+    runtime-versions:
+      dotnet: 6.0
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
@@ -38,13 +40,15 @@ phases:
 #      - docker save $name -o hello-world.tar 
       - |
         if [ $SAVE_IMAGE = "true" ]; then
-          echo docker tag $name $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$name
-          echo docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$name
+          echo $(aws ecr get-login --no-include-email)
+          echo docker tag $name $ECR_REPO/$name
+          echo docker push $ECR_REPO/$name
         fi 
+      - aws sns publish --topic-arn ${SNS_TOPIC} --message "Build $CODEBUILD_BUILD_ID done."
 #    finally:
 #      - |
 #        if [ $SAVE_IMAGE != "true"]; then
-#          docker rmi $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$name
+#          docker rmi $ECR_REPO/$name
 #        fi
 
 #reports:

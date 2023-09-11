@@ -31,7 +31,7 @@ namespace MyCdk
             {
                 BucketName = "ato-dass-hello-bucket"
             });
-            var role = Role.FromRoleArn(this, "BuildContainerRole", "arn:aws:iam::037690295447:role/ato-role-dass-codebuild-service", new FromRoleArnOptions
+            var role = Role.FromRoleArn(this, "BuildContainerRole", $"arn:aws:iam::{Account}:role/ato-role-dass-codebuild-service", new FromRoleArnOptions
             {
                 Mutable = false,
                 AddGrantsToResources = false
@@ -50,11 +50,20 @@ namespace MyCdk
                 },
                 EnvironmentVariables = new Dictionary<string, IBuildEnvironmentVariable>
                 {
+                    ["AWS_DEFAULT_REGION"] = new BuildEnvironmentVariable
+                    {
+                        Value = Region,
+                        Type = BuildEnvironmentVariableType.PLAINTEXT
+                    },
+                    ["AWS_ACCOUNT_ID"] = new BuildEnvironmentVariable
+                    {
+                        Value = Account
+                    },
                     ["EPM_CODE"] = new BuildEnvironmentVariable
                     {
                         Value = epmCode.ValueAsString
                     },
-                    ["SOFTWARE_VERSION"] = new BuildEnvironmentVariable
+                    ["APP_VERSION"] = new BuildEnvironmentVariable
                     {
                         Value = appVersion.ValueAsString
                     },
@@ -67,6 +76,7 @@ namespace MyCdk
                 {
                     Owner = "kar-yeow",
                     Repo = "dotnet-hello-world",
+                    BranchOrRef = "add-cdk-test",
                     Webhook = true
                 }),
                 Artifacts = Artifacts.S3(new S3ArtifactsProps
@@ -89,7 +99,8 @@ namespace MyCdk
                 Source = Source.GitHub(new GitHubSourceProps
                 {
                     Owner = "kar-yeow",
-                    Repo = "dotnet-hello-world"
+                    Repo = "dotnet-hello-world",
+                    BranchOrRef = "add-cdk-test"
                 }),
                 Artifacts = Artifacts.S3(new S3ArtifactsProps
                 {
