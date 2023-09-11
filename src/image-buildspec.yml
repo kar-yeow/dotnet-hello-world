@@ -30,6 +30,7 @@ phases:
       - name=dotnet-hello-world:$APP_VERSION-$CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Building the Docker image $name...          
       - docker build -t $name .
+      - docker images
   post_build:
     commands:
       - echo Build completed on `date`
@@ -54,6 +55,6 @@ phases:
 artifacts:
   name: hello-$APP_VERSION
   files:
-    - src/hello-world.tar
+#    - src/hello-world.tar
     - src/MyApp.Test/TestResults/hello-world.trx
     
