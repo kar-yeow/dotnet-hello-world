@@ -3,8 +3,6 @@ version: 0.2
 env:
   variables:
     APP_VERSION: 0.0.1
-    ECR_REPO: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/hello
-    SNS_TOPIC: arn:aws:sns:${AWS_DEFAULT_REGION}:${AWS_ACCOUNT_ID}:dass-hello-topic
 #  parameter-store:
 #    ARTIFACTORY_USER: arn:aws:ssm:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:parameter/UserName
 #  secrets-manager:
@@ -16,11 +14,15 @@ phases:
       dotnet: 6.0
   pre_build:
     commands:
+      - ECR_REPO=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/hello
+      - SNS_TOPIC=arn:aws:sns:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:dass-hello-topic
+      - NAME=dotnet-hello-world:$APP_VERSION-$CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Logging in to Amazon ECR...
-      - echo $AWS_DEFAULT_REGION $AWS_ACCOUNT_ID $DUMMY_PARAM $DUMMY_SECRET 
+      - echo $AWS_DEFAULT_REGION $AWS_ACCOUNT_ID 
+      - echo $DUMMY_PARAM $DUMMY_SECRET 
       - echo $ECR_REPO $SNS_TOPIC
 #      - echo $ARTIFACTORY_TOKEN
-      - echo ${aws ecr get-login-password}
+#      - echo $(aws ecr get-login-password)
 #      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
   build:
     commands:
@@ -30,26 +32,25 @@ phases:
       - dotnet build MyApp
       - dotnet test MyApp.Test --logger "trx;LogFileName=hello-world.trx"
       - dotnet publish MyApp -c Release -p:UseAppHost=false -o publish
-      - name=dotnet-hello-world:$APP_VERSION-$CODEBUILD_RESOLVED_SOURCE_VERSION
-      - echo Building the Docker image $name...          
-      - docker build -t $name .
+      - echo Building the Docker image $NAME...          
+      - docker build -t $NAME .
       - docker images
   post_build:
     commands:
       - echo Build completed on `date`
-      - echo Pushing the Docker image $name...
-#      - docker save $name -o hello-world.tar 
+      - echo Pushing the Docker image $NAME...
+#      - docker save $NAME -o hello-world.tar 
       - |
         if [ $SAVE_IMAGE = "true" ]; then
           echo $(aws ecr get-login-password)
-          echo docker tag $name $ECR_REPO/$name
-          echo docker push $ECR_REPO/$name
+          echo docker tag $NAME $ECR_REPO/$NAME
+          echo docker push $ECR_REPO/$NAME
         fi 
       - aws sns publish --topic-arn ${SNS_TOPIC} --message "Build ${CODEBUILD_BUILD_ID} done."
 #    finally:
 #      - |
 #        if [ $SAVE_IMAGE != "true"]; then
-#          docker rmi $ECR_REPO/$name
+#          docker rmi $ECR_REPO/$NAME
 #        fi
 
 #reports:
