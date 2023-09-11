@@ -27,9 +27,9 @@ namespace MyCdk
             });
             Tags.SetTag("epmcode", epmCode.ValueAsString);
 
-            var bucket = new Bucket(this, "dass-hello-bucket", new BucketProps
+            var bucket = new Bucket(this, "DassHelloBucket", new BucketProps
             {
-                BucketName = "dass-hello-bucket"
+                BucketName = "ato-dass-hello-bucket"
             });
             var role = Role.FromRoleArn(this, "BuildContainerRole", "arn:aws:iam::037690295447:role/ato-role-dass-codebuild-service", new FromRoleArnOptions
             {
