@@ -35,7 +35,7 @@ phases:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image $name...
-#      - docker save $name -o hello-world.tar 
+      - docker save $name -o hello-world.tar 
       - |
         if [ $SAVE_IMAGE = "true" ]; then
           docker tag $name $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$name
@@ -47,13 +47,13 @@ phases:
 #          docker rmi $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$name
 #        fi
 
-#reports:
-#  codebuild-report-group:
-#    files:
-#      - hello-world.trx
+reports:
+  codebuild-report-group:
+    files:
+      - MyApp.Test/TestResults/hello-world.trx
 
-#artifacts:
-#  name: hello-$APP_VERSION
-#  files:
-#    - src/hello-world.tar
+artifacts:
+  name: hello-$APP_VERSION
+  files:
+    - src/hello-world.tar
     
