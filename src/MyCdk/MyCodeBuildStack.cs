@@ -13,17 +13,23 @@ namespace MyCdk
             var epmCode = new CfnParameter(this, "empcode", new CfnParameterProps
             {
                 Type = "String",
-                Description = "ATO project cost code"
+                Description = "ATO project cost code",
+                AllowedValues = new string[] { "ABC123", "EFG456" },
+                Default = "ABC123"
             });
             var appVersion = new CfnParameter(this, "version", new CfnParameterProps
             {
                 Type = "String",
-                Description = "Application software version to deploy"
+                Description = "Application software version to deploy",
+                AllowedValues = new string[] { "0.0.1", "0.0.2"},
+                Default = "0.0.1"
             });
             var saveImage = new CfnParameter(this, "save", new CfnParameterProps
             {
                 Type = "String",
-                Description = "Save build in ECR and Artifactory"
+                Description = "Save build in ECR and Artifactory",
+                AllowedValues = new string[] { "true", "false" },
+                Default = "false"
             });
             Tags.SetTag("epmcode", epmCode.ValueAsString);
 

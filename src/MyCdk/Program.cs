@@ -1,4 +1,5 @@
 ﻿using Amazon.CDK;
+using System.Diagnostics;
 
 namespace MyCdk
 {
@@ -7,9 +8,9 @@ namespace MyCdk
         public static void Main(string[] args)
         {
             var app = new App();
-            new MyCodeBuildStack(app, "MyCodeBuildStack", new StackProps
+            _ = new MyCodeBuildStack(app, "MyCodeBuildStack", new StackProps
             {
-                StackName = $"build-image-stack",
+                StackName = $"dass-build-image-stack",
                 Env = new Amazon.CDK.Environment
                 {
                     Account = System.Environment.GetEnvironmentVariable("AWS_ACCOUNT"),
@@ -17,9 +18,19 @@ namespace MyCdk
                 }
             });
 
-            new MyAppRunnerStack(app, "MyAppRunnerStack", new StackProps
+            _ = new MyAppRunnerStack(app, "MyAppRunnerStack", new StackProps
             {
-                StackName = $"build-template-stack",
+                StackName = $"dass-build-template-stack",
+                Env = new Amazon.CDK.Environment
+                {
+                    Account = System.Environment.GetEnvironmentVariable("AWS_ACCOUNT"),
+                    Region = System.Environment.GetEnvironmentVariable("AWS_REGION")
+                }
+            });
+
+            _ = new MyFargateStack(app, "MyFargateStack", new StackProps
+            {
+                StackName = $"dass-build-fargate-template-stack",
                 Env = new Amazon.CDK.Environment
                 {
                     Account = System.Environment.GetEnvironmentVariable("AWS_ACCOUNT"),
