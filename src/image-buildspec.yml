@@ -14,10 +14,10 @@ phases:
       dotnet: 6.0
   pre_build:
     commands:
-      - ECR_REPO=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/hello
+      - ECR_HOST=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - ECR_REPO=$ECR_HOST/hello
       - SNS_TOPIC=arn:aws:sns:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:dass-hello-topic
       - NAME=dotnet-hello-world:$APP_VERSION-$CODEBUILD_RESOLVED_SOURCE_VERSION
-      - echo Logging in to Amazon ECR...
       - echo $AWS_DEFAULT_REGION $AWS_ACCOUNT_ID 
       - echo $DUMMY_PARAM $DUMMY_SECRET 
       - echo $ECR_REPO $SNS_TOPIC
@@ -42,11 +42,12 @@ phases:
 #      - docker save $NAME -o hello-world.tar 
       - |
         if [ $SAVE_IMAGE = "true" ]; then
-          echo $(aws ecr get-login-password)
+          echo Logging in to Amazon ECR...
+          aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_HOST
           echo docker tag $NAME $ECR_REPO/$NAME
           echo docker push $ECR_REPO/$NAME
         fi 
-      - aws sns publish --topic-arn ${SNS_TOPIC} --message "Build ${CODEBUILD_BUILD_ID} done."
+#      - aws sns publish --topic-arn ${SNS_TOPIC} --message "Build ${CODEBUILD_BUILD_ID} done."
 #    finally:
 #      - |
 #        if [ $SAVE_IMAGE != "true"]; then
