@@ -3,10 +3,10 @@ version: 0.2
 env:
   variables:
     APP_VERSION: 0.0.1
-#  parameter-store:
-#    ARTIFACTORY_USER: arn:aws:ssm:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:parameter/UserName
-#  secrets-manager:
-#    ARTIFACTORY_TOKEN: dass/DummyToken
+  parameter-store:
+    ARTIFACTORY_USER: /CodeBuild/DummyParam
+  secrets-manager:
+    ARTIFACTORY_TOKEN: dass/DummyToken
 
 phases:
   install:
@@ -47,7 +47,7 @@ phases:
           echo docker tag $NAME $ECR_REPO/$NAME
           echo docker push $ECR_REPO/$NAME
         fi 
-#      - aws sns publish --topic-arn ${SNS_TOPIC} --message "Build ${CODEBUILD_BUILD_ID} done."
+      - aws sns publish --topic-arn ${SNS_TOPIC} --message "Build ${CODEBUILD_BUILD_ID} done."
 #    finally:
 #      - |
 #        if [ $SAVE_IMAGE != "true"]; then

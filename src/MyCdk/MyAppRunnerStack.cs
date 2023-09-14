@@ -13,12 +13,16 @@ namespace MyCdk
             var epmCode = new CfnParameter(this, "empcode", new CfnParameterProps
             {
                 Type = "String",
-                Description = "ATO project cost code"
+                Description = "ATO project cost code",
+                AllowedValues = new string[] { "ABC123", "EFG456" },
+                Default = "ABC123"
             });
             var appVersion = new CfnParameter(this, "version", new CfnParameterProps
             {
                 Type = "String",
-                Description = "Application software version to deploy"
+                Description = "Application software version to deploy",
+                AllowedValues = new string[] { "0.0.1", "0.0.2" },
+                Default = "0.0.1"
             });
             Tags.SetTag("epmcode", epmCode.ValueAsString);
 
