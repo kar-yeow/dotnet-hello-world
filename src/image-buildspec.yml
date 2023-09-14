@@ -33,7 +33,7 @@ phases:
       - dotnet test MyApp.Test --logger "trx;LogFileName=hello-world.trx"
       - dotnet publish MyApp -c Release -p:UseAppHost=false -o publish
       - echo Building the Docker image $NAME...          
-      - docker build -t $NAME .
+      - echo docker build -t $NAME .
   post_build:
     commands:
       - echo Build completed on `date`
@@ -42,9 +42,9 @@ phases:
       - |
         if [ $SAVE_IMAGE = "true" ]; then
           echo Logging in to Amazon ECR...
-          aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_HOST
-          docker tag $NAME $ECR_REPO/$NAME
-          docker push $ECR_REPO/$NAME
+          echo aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_HOST
+          echo docker tag $NAME $ECR_REPO/$NAME
+          echo docker push $ECR_REPO/$NAME
         fi 
       - aws sns publish --topic-arn ${SNS_TOPIC} --message "Build ${CODEBUILD_BUILD_ID} done."
 #    finally:
