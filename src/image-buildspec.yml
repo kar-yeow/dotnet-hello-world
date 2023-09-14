@@ -21,7 +21,7 @@ phases:
       - echo $AWS_DEFAULT_REGION $AWS_ACCOUNT_ID 
       - echo $DUMMY_PARAM $DUMMY_SECRET 
       - echo $ECR_REPO $SNS_TOPIC
-#      - echo $ARTIFACTORY_TOKEN
+      - echo $ARTIFACTORY_TOKEN
 #      - echo $(aws ecr get-login-password)
 #      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
   build:
