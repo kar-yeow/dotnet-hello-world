@@ -3,10 +3,10 @@ version: 0.2
 env:
   variables:
     APP_VERSION: 0.0.1
-#  parameter-store:
-#    ARTIFACTORY_USER: /CodeBuild/DummyParam
+  parameter-store:
+    ARTIFACTORY_USER: /dass/DummyParam
   secrets-manager:
-    ARTIFACTORY_TOKEN: dass/DummyToken:DummyToken
+    ARTIFACTORY_TOKEN: dass/DummyToken:DummyTokenKey
 
 phases:
   install:
@@ -33,7 +33,7 @@ phases:
       - dotnet test MyApp.Test --logger "trx;LogFileName=hello-world.trx"
       - dotnet publish MyApp -c Release -p:UseAppHost=false -o publish
       - echo Building the Docker image $NAME...          
-      - echo docker build -t $NAME .
+      - docker build -t $NAME .
   post_build:
     commands:
       - echo Build completed on `date`
@@ -42,11 +42,11 @@ phases:
       - |
         if [ $SAVE_IMAGE = "true" ]; then
           echo Logging in to Amazon ECR...
-          echo aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_HOST
-          echo docker tag $NAME $ECR_REPO/$NAME
-          echo docker push $ECR_REPO/$NAME
+          aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_HOST
+          docker tag $NAME $ECR_REPO/$NAME
+          docker push $ECR_REPO/$NAME
         fi 
-      - aws sns publish --topic-arn ${SNS_TOPIC} --message "Build ${CODEBUILD_BUILD_ID} done."
+#      - aws sns publish --topic-arn ${SNS_TOPIC} --message "Build ${CODEBUILD_BUILD_ID} done."
 #    finally:
 #      - |
 #        if [ $SAVE_IMAGE != "true"]; then
