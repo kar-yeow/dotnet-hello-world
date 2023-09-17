@@ -15,7 +15,7 @@ phases:
   pre_build:
     commands:
       - ECR_HOST=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      - ECR_REPO=$ECR_HOST/hello
+      - ECR_REPO=$ECR_HOST/hellotest
       - SNS_TOPIC=arn:aws:sns:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:dass-hello-topic
       - NAME=dotnet-hello-world:$APP_VERSION-$CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo $AWS_DEFAULT_REGION $AWS_ACCOUNT_ID 
