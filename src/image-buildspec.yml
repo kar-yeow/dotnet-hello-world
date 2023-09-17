@@ -42,9 +42,13 @@ phases:
       - |
         if [ $SAVE_IMAGE = "true" ]; then
           echo Logging in to Amazon ECR...
+          echo aws ecr get-login-password --region $AWS_DEFAULT_REGION 
+          echo docker login --username AWS --password-stdin $ECR_HOST
           aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_HOST
+          echo docker tag $NAME $ECR_REPO/$NAME
           docker tag $NAME $ECR_REPO/$NAME
           docker push $ECR_REPO/$NAME
+          echo docker push $ECR_REPO/$NAME
         fi 
 #      - aws sns publish --topic-arn ${SNS_TOPIC} --message "Build ${CODEBUILD_BUILD_ID} done."
 #    finally:
