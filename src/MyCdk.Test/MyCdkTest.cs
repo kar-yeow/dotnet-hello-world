@@ -20,12 +20,22 @@ namespace MyCdk.Test
                     {
                         new Dictionary<string, object>
                         {
+                            ["Name"] = "AWS_DEFAULT_REGION",
+                            ["Type"] = "PLAINTEXT"
+                        },
+                        new Dictionary<string, object>
+                        {
+                            ["Name"] = "AWS_ACCOUNT_ID",
+                            ["Type"] = "PLAINTEXT"
+                        },
+                        new Dictionary<string, object>
+                        {
                             ["Name"] = "EPM_CODE",
                             ["Type"] = "PLAINTEXT"
                         },
                         new Dictionary<string, object>
                         {
-                            ["Name"] = "SOFTWARE_VERSION",
+                            ["Name"] = "APP_VERSION",
                             ["Type"] = "PLAINTEXT"
                         },
                         new Dictionary<string, object>
@@ -52,7 +62,7 @@ namespace MyCdk.Test
             var template = Template.FromStack(stack);
             template.HasResourceProperties("AWS::AppRunner::Service", new Dictionary<string, object>
             {
-                ["ServiceName"] = "hello-world-app-runner-service",
+                ["ServiceName"] = "dass-cfst-hello-world-app-runner-service",
                 ["SourceConfiguration"] = new Dictionary<string, object>
                 {
                     ["ImageRepository"] = new Dictionary<string, object>
