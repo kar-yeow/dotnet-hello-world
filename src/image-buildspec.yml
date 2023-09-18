@@ -54,10 +54,10 @@ phases:
 #          docker rmi $ECR_REPO/$NAME
 #        fi
 
-#reports:
-#  codebuild-report-group:
-#    files:
-#      - MyApp.Test/TestResults/hello-world.trx
+reports:
+  codebuild-report-group:
+    files:
+      - MyApp.Test/TestResults/hello-world.trx
 
 artifacts:
   name: hello-$APP_VERSION
