@@ -3,8 +3,8 @@ version: 0.2
 env:
   variables:
     APP_VERSION: 0.0.1
-#  parameter-store:
-#    ARTIFACTORY_USER: /dass/DummyParam
+  parameter-store:
+    ARTIFACTORY_USER: /dass/DummyParam
   secrets-manager:
     ARTIFACTORY_TOKEN: dass/DummyToken:DummyTokenKey
 
@@ -18,6 +18,7 @@ phases:
       - ECR_REPO=$ECR_HOST
       - SNS_TOPIC=arn:aws:sns:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:dass-hello-topic
       - NAME=dotnet-hello-world:$APP_VERSION-$CODEBUILD_RESOLVED_SOURCE_VERSION
+      - TAGNAME=dotnet-hello-world:$APP_VERSION 
       - echo $AWS_DEFAULT_REGION $AWS_ACCOUNT_ID 
       - echo $DUMMY_PARAM $DUMMY_SECRET 
       - echo $ECR_REPO $SNS_TOPIC
@@ -42,13 +43,9 @@ phases:
       - |
         if [ $SAVE_IMAGE = "true" ]; then
           echo Logging in to Amazon ECR...
-          echo aws ecr get-login-password --region $AWS_DEFAULT_REGION 
-          echo docker login --username AWS --password-stdin $ECR_HOST
           aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_HOST
-          echo docker tag $NAME $ECR_REPO/$NAME
-          docker tag $NAME $ECR_REPO/$NAME
-          docker push $ECR_REPO/$NAME
-          echo docker push $ECR_REPO/$NAME
+          docker tag $NAME $ECR_REPO/$TAGNAME
+          docker push $ECR_REPO/$TAGNAME
         fi 
 #      - aws sns publish --topic-arn ${SNS_TOPIC} --message "Build ${CODEBUILD_BUILD_ID} done."
 #    finally:
