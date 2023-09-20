@@ -3,6 +3,7 @@ using Constructs;
 using Amazon.CDK.AWS.CodeBuild;
 using Amazon.CDK.AWS.S3;
 using Amazon.CDK.AWS.IAM;
+using Amazon.CDK.AWS.ECR;
 
 namespace MyCdk
 {
@@ -41,6 +42,10 @@ namespace MyCdk
             {
                 Mutable = false,
                 AddGrantsToResources = false
+            });
+            _ = new Repository(this, "MyHelloRepo", new RepositoryProps
+            {
+                RepositoryName = "dotnet-hello-world"
             });
 
             var buildImage = new Project(this, "BuildContainerImage", new ProjectProps
@@ -83,7 +88,7 @@ namespace MyCdk
                     Owner = "kar-yeow",
                     Repo = "dotnet-hello-world",
                     BranchOrRef = "add-cdk-test",
-                    Webhook = true
+                    Webhook = false
                 }),
                 Artifacts = Artifacts.S3(new S3ArtifactsProps
                 {
