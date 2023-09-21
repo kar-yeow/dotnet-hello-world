@@ -30,7 +30,7 @@ namespace MyCdk
                 Type = "String",
                 Description = "Save build in ECR and Artifactory",
                 AllowedValues = new string[] { "true", "false" },
-                Default = "false"
+                Default = "true"
             });
             Tags.SetTag("epmcode", epmCode.ValueAsString);
 
