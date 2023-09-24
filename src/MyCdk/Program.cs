@@ -38,6 +38,16 @@ namespace MyCdk
                 }
             });
 
+            _ = new MyDummyStack(app, "MyDummyStack", new StackProps
+            {
+                StackName = $"dass-hello-dummy-stack",
+                Env = new Amazon.CDK.Environment
+                {
+                    Account = System.Environment.GetEnvironmentVariable("AWS_ACCOUNT"),
+                    Region = System.Environment.GetEnvironmentVariable("AWS_REGION")
+                }
+            });
+
             app.Synth();
         }
     }
