@@ -4,9 +4,6 @@ using Amazon.CDK.AWS.Lambda;
 using Amazon.CDK.AWS.Logs;
 using Amazon.CDK.AWS.S3;
 using Constructs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MyCdk
 {
@@ -42,8 +39,8 @@ namespace MyCdk
                     RuleScope = ruleScope,
                     ConfigurationChanges = true
                 });
-                Tags.SetTag("compliance-checked", "true");
             }
+            Tags.SetTag("compliance-checked", "true");
         }
     }
 }

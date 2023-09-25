@@ -33,16 +33,27 @@ namespace MyCdk
                 MaxSize = 25,
                 MinSize = 1
             });
-
-            var instanceRole = new Role(this, "DassHelloAppRunnerInstanceRole", new RoleProps
+            var instanceRole = Role.FromRoleArn(this, "AppRunnerInstanceRole", $"arn:aws:iam::{Account}:role/ato-role-dass-apprunner-service", new FromRoleArnOptions
             {
-                AssumedBy = new ServicePrincipal("tasks.apprunner.amazonaws.com")
+                Mutable = false,
+                AddGrantsToResources = false
             });
 
-            var accessRole = new Role(this, "DassHelloAppRunnerBuildRole", new RoleProps
+            //var instanceRole = new Role(this, "DassHelloAppRunnerInstanceRole", new RoleProps
+            //{
+            //    AssumedBy = new ServicePrincipal("tasks.apprunner.amazonaws.com")
+            //});
+
+            var accessRole = Role.FromRoleArn(this, "AppRunnerInstanceRole", $"arn:aws:iam::{Account}:role/ato-role-dass-apprunner-service", new FromRoleArnOptions
             {
-                AssumedBy = new ServicePrincipal("build.apprunner.amazonaws.com")
+                Mutable = false,
+                AddGrantsToResources = false
             });
+
+            //var accessRole = new Role(this, "DassHelloAppRunnerBuildRole", new RoleProps
+            //{
+            //    AssumedBy = new ServicePrincipal("build.apprunner.amazonaws.com")
+            //});
 
             var appRunner = new CfnService(this, "DassHelloAppRunnerTemplate", new CfnServiceProps{
                 ServiceName = "dass-cfst-hello-world-app-runner-service",
