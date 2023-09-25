@@ -27,7 +27,7 @@ namespace MyCdk
                 }
             };
 
-            _ = new Vpc(this, "developer-vpc", new VpcProps
+            var vpc = new Vpc(this, "developer-vpc", new VpcProps
             {
                 EnableDnsSupport = true,
                 EnableDnsHostnames = true,
@@ -36,6 +36,8 @@ namespace MyCdk
                 SubnetConfiguration = subnetConfigs,
                 MaxAzs = 2
             });
+
+            _ = new MyCheckingStack(scope, vpc.IsolatedSubnets);
         }
     }
 }

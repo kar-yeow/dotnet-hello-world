@@ -12,7 +12,7 @@ namespace MyCdk
 {
     public class MyCheckingStack : Stack
     {
-        public MyCheckingStack(Construct scope, List<Amazon.CDK.AWS.EC2.ISubnet> subnetToMonitor) : base(scope, "ComplianceCheckingStack", null)
+        public MyCheckingStack(Construct scope, Amazon.CDK.AWS.EC2.ISubnet[] subnetToMonitor) : base(scope, "ComplianceCheckingStack", null)
         {
             if (!subnetToMonitor.Any())
             {
@@ -30,7 +30,7 @@ namespace MyCdk
                 Timeout = Duration.Seconds(30)
             };
 
-            for (int i = 0; i < subnetToMonitor.Count; i++)
+            for (int i = 0; i < subnetToMonitor.Length; i++)
             {
                 IFunction fn = new Function(this, $"verify-isolated-subnet-function-{i+1}", props);
                 string ruleName = $"verify-isolated-subnet-compliance-rule-{i+1}"; // Add 1 so we aren't using a zero based index for naming.

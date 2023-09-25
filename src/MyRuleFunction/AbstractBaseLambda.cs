@@ -2,8 +2,9 @@
 using Amazon.ConfigService;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.ConfigEvents;
-using System.Text.Json;
+using Newtonsoft.Json;
 
+[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 namespace MyRuleFunction
 {
     public class InvokeEvent
@@ -28,13 +29,13 @@ namespace MyRuleFunction
                 throw new Exception($"Events with the message type {ie.MessageType} are not evaluated for this Config rule.");
             }
             ComplianceType result = EvaluateCompliance(e, ie, c);
-            Evaluation evaluation = CreateEvaluation(e, result);
-            await RegisterEvaluationResult(evaluation, e.ResultToken);
+
+            await RegisterEvaluationResult(e, ie.ConfigurationItem, result);
         }
 
         protected InvokeEvent GetInvokeEvent(ConfigEvent e)
         {
-            var ie = JsonSerializer.Deserialize<InvokeEvent>(e.InvokingEvent);
+            var ie = JsonConvert.DeserializeObject<InvokeEvent>(e.InvokingEvent);
             if (ie == null)
             {
                 throw new Exception($"Deserialising the InvokingEvent returned a failed. {e.InvokingEvent}");
@@ -43,26 +44,21 @@ namespace MyRuleFunction
             return ie;
         }
 
-        protected Evaluation CreateEvaluation(ConfigEvent e, ComplianceType result)
+        protected async Task RegisterEvaluationResult(ConfigEvent e, ConfigurationItem ci, ComplianceType result)
         {
-            var ie = GetInvokeEvent(e);
-            return new Evaluation
+            Evaluation evaluation = new Evaluation
             {
-                ComplianceResourceId = ie.ConfigurationItem?.ResourceId,
-                ComplianceResourceType = ie.ConfigurationItem?.ResourceType,
-                OrderingTimestamp = ie.ConfigurationItem?.ConfigurationItemCaptureTime ?? DateTime.Now,
+                ComplianceResourceId = ci.ResourceId,
+                ComplianceResourceType = ci.ResourceType,
+                OrderingTimestamp = ci.ConfigurationItemCaptureTime,
                 ComplianceType = result,
                 Annotation = e.ConfigRuleName
             };
-        }
-
-        protected async Task RegisterEvaluationResult(Evaluation evaluation, string resultToken)
-        {
 
             PutEvaluationsRequest request = new PutEvaluationsRequest
             {
                 Evaluations = { evaluation },
-                ResultToken = resultToken
+                ResultToken = e.ResultToken
             };
 
             PutEvaluationsResponse response = await _config.PutEvaluationsAsync(request);
