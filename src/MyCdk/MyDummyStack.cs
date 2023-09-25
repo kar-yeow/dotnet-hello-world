@@ -37,7 +37,7 @@ namespace MyCdk
                 MaxAzs = 2
             });
 
-            _ = new MyCheckingStack(scope, vpc.IsolatedSubnets, id, props);
+            _ = new MyCheckingStack(scope, vpc.IsolatedSubnets, "MyCheckingStack", props);
         }
     }
 }
