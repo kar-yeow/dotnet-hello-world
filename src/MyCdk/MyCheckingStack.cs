@@ -12,7 +12,7 @@ namespace MyCdk
 {
     public class MyCheckingStack : Stack
     {
-        public MyCheckingStack(Construct scope, Amazon.CDK.AWS.EC2.ISubnet[] subnetToMonitor) : base(scope, "ComplianceCheckingStack", null)
+        public MyCheckingStack(Construct scope, Amazon.CDK.AWS.EC2.ISubnet[] subnetToMonitor) : base(scope, "MyCheckingStack", null)
         {
             if (!subnetToMonitor.Any())
             {
