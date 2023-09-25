@@ -44,7 +44,7 @@ namespace MyCdk
             //    AssumedBy = new ServicePrincipal("tasks.apprunner.amazonaws.com")
             //});
 
-            var accessRole = Role.FromRoleArn(this, "AppRunnerInstanceRole", $"arn:aws:iam::{Account}:role/ato-role-dass-apprunner-service", new FromRoleArnOptions
+            var accessRole = Role.FromRoleArn(this, "AppRunnerAccessRole", $"arn:aws:iam::{Account}:role/ato-role-dass-apprunner-service", new FromRoleArnOptions
             {
                 Mutable = false,
                 AddGrantsToResources = false
