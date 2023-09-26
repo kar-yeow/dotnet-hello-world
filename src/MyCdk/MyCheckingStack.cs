@@ -29,8 +29,8 @@ namespace MyCdk
 
             for (int i = 0; i < subnetToMonitor.Length; i++)
             {
-                IFunction fn = new Function(this, $"verify-isolated-subnet-function-{i+1}", props);
-                string ruleName = $"verify-isolated-subnet-compliance-rule-{i+1}"; // Add 1 so we aren't using a zero based index for naming.
+                IFunction fn = new Function(this, $"dass-verify-isolated-subnet-function-{i+1}", props);
+                string ruleName = $"dass-verify-isolated-subnet-compliance-rule-{i+1}"; // Add 1 so we aren't using a zero based index for naming.
                 RuleScope ruleScope = RuleScope.FromResource(ResourceType.EC2_SUBNET, subnetToMonitor[i].SubnetId);
                 _ = new CustomRule(this, ruleName, new CustomRuleProps
                 {

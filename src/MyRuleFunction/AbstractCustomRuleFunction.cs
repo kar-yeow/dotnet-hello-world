@@ -13,11 +13,11 @@ namespace MyRuleFunction
         public string? MessageType { get; set; }
     }
 
-    public abstract class AbstractBaseLambda
+    public abstract class AbstractCustomRuleFunction
     {
         private AmazonConfigServiceClient _config = new AmazonConfigServiceClient();
 
-	    protected AbstractBaseLambda()
+	    protected AbstractCustomRuleFunction()
         {
         }
 
@@ -71,22 +71,30 @@ namespace MyRuleFunction
             }
         }
 
-        protected abstract ComplianceType EvaluateCompliance(ConfigEvent e, InvokeEvent ie, ILambdaContext c);
-	    /* Example code:
-	    {
-		    if (isEventNotApplicable())
-		    {
-			    return ComplianceType.NOT_APPLICABLE;
-		    }
-		    else if (isCompliant())
-		    {
-			    return ComplianceType.COMPLIANT;
-		    }
-		    else
-		    {
-			    return ComplianceType.NON_COMPLIANT;
-		    }
-	    }*/
+        protected bool IsNotApplicable(ConfigEvent e, ConfigurationItem? ci)
+        {
+            var status = ci?.ConfigurationItemStatus;
+            return e.EventLeftScope || status == ConfigurationItemStatus.ResourceDeleted 
+                    || status == ConfigurationItemStatus.ResourceNotRecorded 
+                    || status == ConfigurationItemStatus.ResourceDeletedNotRecorded;
+        }
 
+        protected abstract bool IsCompliance(ConfigEvent e, InvokeEvent ie, ILambdaContext c);
+
+        protected ComplianceType EvaluateCompliance(ConfigEvent e, InvokeEvent ie, ILambdaContext c)
+	    {
+            var result = ComplianceType.NON_COMPLIANT;
+            c.Logger.Log($"msg={ie.MessageType} resource id={ie.ConfigurationItem?.ResourceId} resource name={ie.ConfigurationItem?.ResourceName}");
+            if (IsNotApplicable(e, ie.ConfigurationItem))
+		    {
+			    result = ComplianceType.NOT_APPLICABLE;
+		    }
+		    else if (IsCompliance(e, ie, c))
+		    {
+			    result = ComplianceType.COMPLIANT;
+		    }
+            c.Logger.Log($"{e.ConfigRuleName} compliance result={result}");
+            return result;
+	    }
     }
 }
