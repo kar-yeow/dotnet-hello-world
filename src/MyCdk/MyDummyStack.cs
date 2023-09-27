@@ -6,7 +6,7 @@ namespace MyCdk
 {
     public class MyDummyStack : Stack
     {
-        public MyDummyStack(Construct scope, string id, IStackProps? props = null) : base(scope,id, props)
+        public MyDummyStack(Construct scope, string id, IStackProps? props = null) : base(scope, id, props)
         {
             //var vpc = new Vpc(this, "MyVpc", new VpcProps
             //{
@@ -26,22 +26,44 @@ namespace MyCdk
             //    },
             //    MaxAzs = 2
             //});
-
-            var subnets = new ISubnet[]
+            var sg = new SecurityGroup(this, "MySecurityGroup", new SecurityGroupProps
             {
-                Subnet.FromSubnetAttributes(this, "MySubnet1", new SubnetAttributes
+                SecurityGroupName = "sg-rule-test",
+                Vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
                 {
-                    SubnetId = "subnet-049369136ecb2bd54",
-                    RouteTableId = "rtb-049c4bf4db5b9b8ce"
-                }),
-                Subnet.FromSubnetAttributes(this, "MySubnet2", new SubnetAttributes
-                {
-                    SubnetId = "subnet-06e6594cb233f514b",
-                    RouteTableId = "rtb-049c4bf4db5b9b8ce"
+                    VpcId = "vpc-01fe61cb1984e4911",
+                    AvailabilityZones = new string[] { "ap-southeast-2" }
                 })
-            };
+                //Vpc = Vpc.FromLookup(this, "MyVpc", new VpcLookupOptions
+                //{
+                //    VpcName = "ato-dass-dev",
+                //    Region = "ap-southeast-2",
+                //    OwnerAccountId = "037690295447",
+                //    IsDefault = true
+                //}),
+                //DisableInlineRules = true
+            });
 
-            _ = new MyCheckingStack(scope, subnets, "MyCheckingStack", props);
+            //var subnets = new ISubnet[]
+            //{
+            //    Subnet.FromSubnetAttributes(this, "MySubnet1", new SubnetAttributes
+            //    {
+            //        SubnetId = "subnet-049369136ecb2bd54",
+            //        RouteTableId = "rtb-049c4bf4db5b9b8ce"
+            //    }),
+            //    Subnet.FromSubnetAttributes(this, "MySubnet2", new SubnetAttributes
+            //    {
+            //        SubnetId = "subnet-06e6594cb233f514b",
+            //        RouteTableId = "rtb-049c4bf4db5b9b8ce"
+            //    })
+            //};
+
+            var stack = new MyCheckingStack(scope, sg, "MyCheckingStack", props);
+
+            _ = new CfnOutput(this, "MyDummyStackOutput", new CfnOutputProps
+            {
+                Value = $"Stack name= {stack.StackName}, sg={sg.SecurityGroupId}"
+            });
         }
     }
 }
