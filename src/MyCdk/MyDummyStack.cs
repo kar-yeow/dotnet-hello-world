@@ -29,13 +29,15 @@ namespace MyCdk
 
             var subnets = new ISubnet[]
             {
-                Subnet.FromSubnetAttributes(this, "MySubnet", new SubnetAttributes
+                Subnet.FromSubnetAttributes(this, "MySubnet1", new SubnetAttributes
                 {
-                    AvailabilityZone = "ap-southeast-2a"
+                    SubnetId = "subnet-049369136ecb2bd54",
+                    RouteTableId = "rtb-049c4bf4db5b9b8ce"
                 }),
-                Subnet.FromSubnetAttributes(this, "MySubnet", new SubnetAttributes
+                Subnet.FromSubnetAttributes(this, "MySubnet2", new SubnetAttributes
                 {
-                    AvailabilityZone = "ap-southeast-2b"
+                    SubnetId = "subnet-06e6594cb233f514b",
+                    RouteTableId = "rtb-049c4bf4db5b9b8ce"
                 })
             };
 
