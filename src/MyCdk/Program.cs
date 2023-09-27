@@ -1,5 +1,4 @@
 ﻿using Amazon.CDK;
-using System.Diagnostics;
 
 namespace MyCdk
 {
@@ -8,6 +7,7 @@ namespace MyCdk
         public static void Main(string[] args)
         {
             var app = new App();
+
             _ = new MyCodeBuildStack(app, "MyCodeBuildStack", new StackProps
             {
                 StackName = $"dass-build-image-stack",

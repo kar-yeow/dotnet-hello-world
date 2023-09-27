@@ -38,9 +38,8 @@ namespace MyRuleFunction
             var ie = JsonConvert.DeserializeObject<InvokeEvent>(e.InvokingEvent);
             if (ie == null)
             {
-                throw new Exception($"Deserialising the InvokingEvent returned a failed. {e.InvokingEvent}");
+                throw new Exception($"Deserialize the InvokingEvent returned a failed. {e.InvokingEvent}");
             }
-
             return ie;
         }
 

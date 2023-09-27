@@ -8,8 +8,10 @@ namespace MyCdk
     {
         public MyDummyStack(Construct scope, string id, IStackProps? props = null) : base(scope,id, props)
         {
+
             var vpc = new Vpc(this, "MyVpc", new VpcProps
             {
+                RestrictDefaultSecurityGroup = false,
                 EnableDnsSupport = true,
                 EnableDnsHostnames = true,
                 NatGateways = 0,

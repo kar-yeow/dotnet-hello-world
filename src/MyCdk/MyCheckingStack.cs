@@ -1,5 +1,6 @@
 ﻿using Amazon.CDK;
 using Amazon.CDK.AWS.Config;
+using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.Lambda;
 using Amazon.CDK.AWS.Logs;
 using Amazon.CDK.AWS.S3;
@@ -20,24 +21,26 @@ namespace MyCdk
 
             FunctionProps props = new FunctionProps
             {
+                FunctionName = "dass-rule-function-test",
                 Runtime = Runtime.DOTNET_6,
-                Handler = "MyRuleFunction.DummyNonComplianceLambda",
+                Handler = "MyRuleFunction::MyRuleFunction.DummyNonComplianceLambda::HandleRequest",
                 Code = Code.FromBucket(bucket, "my-rule-function.zip"),
-                LogRetention = RetentionDays.TWO_WEEKS,
-                Timeout = Duration.Seconds(30)
+                LogRetention = RetentionDays.THREE_DAYS,
+                Timeout = Duration.Seconds(30),
+                Role = Role.FromRoleName(this, "MyFunctionRole", "ato-role-baseline-lambda-exec")
             };
 
             for (int i = 0; i < subnetToMonitor.Length; i++)
             {
-                IFunction fn = new Function(this, $"dass-verify-isolated-subnet-function-{i+1}", props);
                 string ruleName = $"dass-verify-isolated-subnet-compliance-rule-{i+1}"; // Add 1 so we aren't using a zero based index for naming.
-                RuleScope ruleScope = RuleScope.FromResource(ResourceType.EC2_SUBNET, subnetToMonitor[i].SubnetId);
                 _ = new CustomRule(this, ruleName, new CustomRuleProps
                 {
                     ConfigRuleName = ruleName,
-                    LambdaFunction = fn,
-                    RuleScope = ruleScope,
-                    ConfigurationChanges = true
+                    LambdaFunction = new Function(this, $"dass-verify-isolated-subnet-function-{i + 1}", props),
+                    RuleScope = RuleScope.FromResource(ResourceType.EC2_SUBNET, subnetToMonitor[i].SubnetId),
+                    ConfigurationChanges = true,
+                    Periodic = false,
+                    Description = $"{ruleName} to test custom rule"
                 });
             }
             Tags.SetTag("compliance-checked", "true");
