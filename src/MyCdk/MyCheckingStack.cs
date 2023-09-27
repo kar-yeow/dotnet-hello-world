@@ -29,7 +29,11 @@ namespace MyCdk
                 Code = Code.FromBucket(bucket, "my-rule-function.zip"),
                 //LogRetention = RetentionDays.THREE_DAYS,
                 Timeout = Duration.Seconds(30),
-                Role = Role.FromRoleName(this, "MyFunctionRole", "ato-role-baseline-lambda-exec")
+                Role = Role.FromRoleName(this, "MyFunctionRole", "ato-role-baseline-lambda-exec", new FromRoleNameOptions
+                {
+                    Mutable = false,
+                    AddGrantsToResources = false
+                })
             });
 
             for (int i = 0; i < subnetToMonitor.Length; i++)
