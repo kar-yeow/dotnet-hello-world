@@ -17,7 +17,7 @@ namespace MyCdk
                 throw new Exception("subnetToMonitor is zero");
             }
 
-            var bucket = Bucket.FromBucketName(this, "MyBucket", "dass-hello-bucket");
+            var bucket = Bucket.FromBucketName(this, "MyBucket", "ato-dass-hello-bucket");
 
             //var func = Function.FromFunctionArn(this, "MyFunction", "arn:aws:lambda:ap-southeast-2:037690295447:function:dass-hello-test");
 
