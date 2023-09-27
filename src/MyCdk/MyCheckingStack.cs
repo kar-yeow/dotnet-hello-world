@@ -19,16 +19,18 @@ namespace MyCdk
 
             var bucket = Bucket.FromBucketName(this, "MyBucket", "dass-hello-bucket");
 
-            FunctionProps props = new FunctionProps
-            {
-                FunctionName = "dass-rule-function-test",
-                Runtime = Runtime.DOTNET_6,
-                Handler = "MyRuleFunction::MyRuleFunction.DummyNonComplianceLambda::HandleRequest",
-                Code = Code.FromBucket(bucket, "my-rule-function.zip"),
-                LogRetention = RetentionDays.THREE_DAYS,
-                Timeout = Duration.Seconds(30),
-                Role = Role.FromRoleName(this, "MyFunctionRole", "ato-role-baseline-lambda-exec")
-            };
+            var func = Function.FromFunctionArn(this, "MyFunction", "arn:aws:lambda:ap-southeast-2:037690295447:function:dass-hello-test");
+
+            //FunctionProps props = new FunctionProps
+            //{
+            //    FunctionName = "dass-rule-function-test",
+            //    Runtime = Runtime.DOTNET_6,
+            //    Handler = "MyRuleFunction::MyRuleFunction.DummyNonComplianceLambda::HandleRequest",
+            //    Code = Code.FromBucket(bucket, "my-rule-function.zip"),
+            //    LogRetention = RetentionDays.THREE_DAYS,
+            //    Timeout = Duration.Seconds(30),
+            //    Role = Role.FromRoleName(this, "MyFunctionRole", "ato-role-baseline-lambda-exec")
+            //};
 
             for (int i = 0; i < subnetToMonitor.Length; i++)
             {
@@ -36,7 +38,7 @@ namespace MyCdk
                 _ = new CustomRule(this, ruleName, new CustomRuleProps
                 {
                     ConfigRuleName = ruleName,
-                    LambdaFunction = new Function(this, $"dass-verify-isolated-subnet-function-{i + 1}", props),
+                    LambdaFunction = func,//new Function(this, $"dass-verify-isolated-subnet-function-{i + 1}", props),
                     RuleScope = RuleScope.FromResource(ResourceType.EC2_SUBNET, subnetToMonitor[i].SubnetId),
                     ConfigurationChanges = true,
                     Periodic = false,
