@@ -60,6 +60,7 @@ namespace MyCdk
                 VpcId = "vpc-01fe61cb1984e4911",
                 AvailabilityZones = new string[] { "ap-southeast-2" }
             });
+            var sg = SecurityGroup.FromSecurityGroupId(this, "MySg", "sg-049cd86f2cc007247");
 
             var buildImage = new Project(this, "BuildContainerImage", new ProjectProps
             {
@@ -131,6 +132,7 @@ namespace MyCdk
                     Bucket = bucket,
                     Path = "/template"
                 }),
+                SecurityGroups = new ISecurityGroup[] { sg },
                 Vpc = vpc,
                 SubnetSelection = new SubnetSelection
                 {
