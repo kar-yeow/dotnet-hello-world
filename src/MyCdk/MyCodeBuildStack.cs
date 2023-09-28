@@ -4,6 +4,7 @@ using Amazon.CDK.AWS.CodeBuild;
 using Amazon.CDK.AWS.S3;
 using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.ECR;
+using Amazon.CDK.AWS.EC2;
 
 namespace MyCdk
 {
@@ -22,7 +23,7 @@ namespace MyCdk
             {
                 Type = "String",
                 Description = "Application software version to deploy",
-                AllowedValues = new string[] { "0.0.1", "0.0.2"},
+                AllowedValues = new string[] { "0.0.1", "0.0.2" },
                 Default = "0.0.1"
             });
             var saveImage = new CfnParameter(this, "save", new CfnParameterProps
@@ -46,6 +47,12 @@ namespace MyCdk
             _ = new Repository(this, "MyHelloRepo", new RepositoryProps
             {
                 RepositoryName = "dotnet-hello-world"
+            });
+
+            var vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
+            {
+                VpcId = "vpc-01fe61cb1984e4911",
+                AvailabilityZones = new string[] { "ap-southeast-2" }
             });
 
             var buildImage = new Project(this, "BuildContainerImage", new ProjectProps
@@ -117,7 +124,19 @@ namespace MyCdk
                 {
                     Bucket = bucket,
                     Path = "/template"
-                })
+                }),
+                Vpc = vpc,
+                SubnetSelection = new SubnetSelection
+                {
+                    Subnets = new ISubnet[]
+                    {
+                        Subnet.FromSubnetAttributes(this, "MySubnet1", new SubnetAttributes
+                        {
+                            SubnetId = "subnet-049369136ecb2bd54",
+                            RouteTableId = "rtb-049c4bf4db5b9b8ce"
+                        })
+                    }
+                }
             });
 
             _ = new CfnOutput(this, "build container image", new CfnOutputProps

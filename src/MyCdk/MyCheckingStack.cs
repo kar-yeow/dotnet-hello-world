@@ -36,15 +36,15 @@ namespace MyCdk
                 })
             });
 
-            //var rule = new CustomRule(this, "MyCustomRule", new CustomRuleProps
-            //{
-            //    ConfigRuleName = "dass-sg-rule",
-            //    LambdaFunction = func,
-            //    RuleScope = Amazon.CDK.AWS.Config.RuleScope.FromResource(ResourceType.EC2_SECURITY_GROUP, sg.SecurityGroupId),
-            //    ConfigurationChanges = true,
-            //    Periodic = false,
-            //    Description = $"dass dummy rule to test custom security group"
-            //});
+            var rule = new CustomRule(this, "MyCustomRule", new CustomRuleProps
+            {
+                ConfigRuleName = "dass-sg-rule",
+                LambdaFunction = func,
+                RuleScope = Amazon.CDK.AWS.Config.RuleScope.FromResource(ResourceType.EC2_SECURITY_GROUP, sg.SecurityGroupId),
+                ConfigurationChanges = true,
+                Periodic = false,
+                Description = $"dass dummy rule to test custom security group"
+            });
 
             //for (int i = 0; i < subnetToMonitor.Length; i++)
             //{
@@ -63,8 +63,7 @@ namespace MyCdk
 
             _ = new CfnOutput(this, "MyRuleOutput", new CfnOutputProps
             {
-                //Value = $"rule={rule.ConfigRuleId} {rule.ConfigRuleArn}"
-                Value = $"function= {func.FunctionArn} {func.FunctionName}"
+                Value = $"rule={rule.ConfigRuleId} {rule.ConfigRuleArn}, function= {func.FunctionArn} {func.FunctionName}"
             });
         }
     }
