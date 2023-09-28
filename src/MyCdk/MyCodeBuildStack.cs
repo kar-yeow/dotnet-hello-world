@@ -70,7 +70,11 @@ namespace MyCdk
             {
                 Subnets = new ISubnet[]
                 {
-                    Subnet.FromSubnetId(this, "MySubnet", "subnet-049369136ecb2bd54")
+                    Subnet.FromSubnetAttributes(this, "MySubnet", new SubnetAttributes
+                    {
+                        SubnetId = "subnet-049369136ecb2bd54",
+                        RouteTableId = "rtb-049c4bf4db5b9b8ce"
+                    })
                 }
             };
 
