@@ -35,25 +35,24 @@ namespace MyCdk
             });
             Tags.SetTag("epmcode", epmCode.ValueAsString);
 
-            var bucket = new Bucket(this, "DassHelloBucket", new BucketProps
-            {
-                BucketName = "ato-dass-hello-bucket"
-            });
+            var bucket = Bucket.FromBucketName(this, "MyDassHelloBucket", "ato-dass-hello-bucket")
+                    ?? new Bucket(this, "MyDassHelloBucket", new BucketProps
+                    {
+                        BucketName = "ato-dass-hello-bucket"
+                    });
+
             var role = Role.FromRoleArn(this, "BuildContainerRole", $"arn:aws:iam::{Account}:role/ato-role-dass-codebuild-service", new FromRoleArnOptions
             {
                 Mutable = false,
                 AddGrantsToResources = false
             });
 
-            var repo = Repository.FromRepositoryName(this, "MyHelloRepo", "dotnet-hello-world");
-            if (repo == null)
-            {
-                repo = new Repository(this, "MyHelloRepo", new RepositoryProps
-                {
-                    RepositoryName = "dotnet-hello-world",
+            var repo = Repository.FromRepositoryName(this, "MyHelloRepo", "dotnet-hello-world")
+                    ?? new Repository(this, "MyHelloRepo", new RepositoryProps
+                    {
+                        RepositoryName = "dotnet-hello-world",
 
-                });
-            }
+                    });
 
             var vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
             {
