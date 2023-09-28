@@ -54,25 +54,25 @@ namespace MyCdk
 
                     });
 
-            //var vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
-            //{
-            //    VpcId = "vpc-01fe61cb1984e4911",
-            //    AvailabilityZones = new string[] { "ap-southeast-2" }
-            //});
-            //var securityGroups = new ISecurityGroup[] 
-            //{ 
-            //    SecurityGroup.FromSecurityGroupId(this, "MySg", "sg-049cd86f2cc007247", new SecurityGroupImportOptions
-            //    {
-            //        Mutable = false
-            //    }) 
-            //};
-            //var subnetSelection = new SubnetSelection
-            //{
-            //    Subnets = new ISubnet[]
-            //    {
-            //        Subnet.FromSubnetId(this, "MySubnet", "subnet-049369136ecb2bd54")
-            //    }
-            //};
+            var vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
+            {
+                VpcId = "vpc-01fe61cb1984e4911",
+                AvailabilityZones = new string[] { "ap-southeast-2" }
+            });
+            var securityGroups = new ISecurityGroup[]
+            {
+                SecurityGroup.FromSecurityGroupId(this, "MySg", "sg-049cd86f2cc007247", new SecurityGroupImportOptions
+                {
+                    Mutable = false
+                })
+            };
+            var subnetSelection = new SubnetSelection
+            {
+                Subnets = new ISubnet[]
+                {
+                    Subnet.FromSubnetId(this, "MySubnet", "subnet-049369136ecb2bd54")
+                }
+            };
 
             var buildImage = new Project(this, "MyBuildContainerImage", new ProjectProps
             {
@@ -125,9 +125,9 @@ namespace MyCdk
 
             var deployTemplate = new Project(this, "MyBuildDeployTemplate", new ProjectProps
             {
-                //SecurityGroups = securityGroups,
-                //Vpc = vpc,
-                //SubnetSelection = subnetSelection,
+                SecurityGroups = securityGroups,
+                Vpc = vpc,
+                SubnetSelection = subnetSelection,
                 Role = role,
                 ProjectName = "dass-build-deploy-hello-cfst-template",
                 BuildSpec = BuildSpec.FromSourceFilename("src/template-buildspec.yml"),
