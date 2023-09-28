@@ -23,7 +23,7 @@ namespace MyCdk
             {
                 Type = "String",
                 Description = "Application software version to deploy",
-                AllowedValues = new string[] { "0.0.1", "0.0.2" },
+                AllowedValues = new string[] { "0.0.1", "0.0.2", "0.0.3" },
                 Default = "0.0.1"
             });
             var saveImage = new CfnParameter(this, "save", new CfnParameterProps
@@ -54,21 +54,34 @@ namespace MyCdk
 
                     });
 
-            var vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
-            {
-                VpcId = "vpc-01fe61cb1984e4911",
-                AvailabilityZones = new string[] { "ap-southeast-2" }
-            });
-            var sg = SecurityGroup.FromSecurityGroupId(this, "MySg", "sg-049cd86f2cc007247");
+            //var vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
+            //{
+            //    VpcId = "vpc-01fe61cb1984e4911",
+            //    AvailabilityZones = new string[] { "ap-southeast-2" }
+            //});
+            //var securityGroups = new ISecurityGroup[] 
+            //{ 
+            //    SecurityGroup.FromSecurityGroupId(this, "MySg", "sg-049cd86f2cc007247", new SecurityGroupImportOptions
+            //    {
+            //        Mutable = false
+            //    }) 
+            //};
+            //var subnetSelection = new SubnetSelection
+            //{
+            //    Subnets = new ISubnet[]
+            //    {
+            //        Subnet.FromSubnetId(this, "MySubnet", "subnet-049369136ecb2bd54")
+            //    }
+            //};
 
-            var buildImage = new Project(this, "BuildContainerImage", new ProjectProps
+            var buildImage = new Project(this, "MyBuildContainerImage", new ProjectProps
             {
                 Role = role,
                 BuildSpec = BuildSpec.FromSourceFilename("src/image-buildspec.yml"),
                 ProjectName = "dass-build-container-hello-cfst-image",
                 Environment = new BuildEnvironment
                 {
-                    ComputeType = ComputeType.MEDIUM,
+                    ComputeType = ComputeType.SMALL,
                     BuildImage = LinuxBuildImage.AMAZON_LINUX_2_5,
                     Privileged = true
                 },
@@ -110,48 +123,39 @@ namespace MyCdk
                 })
             });
 
-            var deployTemplate = new Project(this, "BuildDeployTemplate", new ProjectProps
+            var deployTemplate = new Project(this, "MyBuildDeployTemplate", new ProjectProps
             {
+                //SecurityGroups = securityGroups,
+                //Vpc = vpc,
+                //SubnetSelection = subnetSelection,
                 Role = role,
                 ProjectName = "dass-build-deploy-hello-cfst-template",
                 BuildSpec = BuildSpec.FromSourceFilename("src/template-buildspec.yml"),
                 Environment = new BuildEnvironment
                 {
-                    ComputeType = ComputeType.MEDIUM,
+                    ComputeType = ComputeType.SMALL,
                     BuildImage = LinuxBuildImage.AMAZON_LINUX_2_5
                 },
                 Source = Source.GitHub(new GitHubSourceProps
                 {
                     Owner = "kar-yeow",
                     Repo = "dotnet-hello-world",
-                    BranchOrRef = "add-cdk-test"
+                    BranchOrRef = "add-cdk-test",
+                    Webhook = false
                 }),
                 Artifacts = Artifacts.S3(new S3ArtifactsProps
                 {
                     Bucket = bucket,
                     Path = "/template"
-                }),
-                SecurityGroups = new ISecurityGroup[] { sg },
-                Vpc = vpc,
-                SubnetSelection = new SubnetSelection
-                {
-                    Subnets = new ISubnet[]
-                    {
-                        Subnet.FromSubnetAttributes(this, "MySubnet1", new SubnetAttributes
-                        {
-                            SubnetId = "subnet-049369136ecb2bd54",
-                            RouteTableId = "rtb-049c4bf4db5b9b8ce"
-                        })
-                    }
-                }
+                })
             });
 
-            _ = new CfnOutput(this, "build container image", new CfnOutputProps
+            _ = new CfnOutput(this, "MyBuildContainerImageOutput", new CfnOutputProps
             {
                 Value = $"{buildImage.ProjectName} {buildImage.Stack.StackId} {bucket.BucketArn} done."
             });
 
-            _ = new CfnOutput(this, "build deploy template", new CfnOutputProps
+            _ = new CfnOutput(this, "MyBuildDeployTemplateOutput", new CfnOutputProps
             {
                 Value = $"{deployTemplate.ProjectName} {deployTemplate.Stack.StackId} {bucket.BucketArn} {repo.RepositoryArn}."
             });
