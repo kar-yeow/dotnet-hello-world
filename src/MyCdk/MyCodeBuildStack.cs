@@ -44,10 +44,11 @@ namespace MyCdk
                 Mutable = false,
                 AddGrantsToResources = false
             });
-            _ = new Repository(this, "MyHelloRepo", new RepositoryProps
-            {
-                RepositoryName = "dotnet-hello-world"
-            });
+            //_ = new Repository(this, "MyHelloRepo", new RepositoryProps
+            //{
+            //    RepositoryName = "dotnet-hello-world",
+                
+            //});
 
             var vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
             {
