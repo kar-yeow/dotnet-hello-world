@@ -44,11 +44,16 @@ namespace MyCdk
                 Mutable = false,
                 AddGrantsToResources = false
             });
-            //_ = new Repository(this, "MyHelloRepo", new RepositoryProps
-            //{
-            //    RepositoryName = "dotnet-hello-world",
-                
-            //});
+
+            var repo = Repository.FromRepositoryName(this, "MyHelloRepo", "dotnet-hello-world");
+            if (repo == null)
+            {
+                repo = new Repository(this, "MyHelloRepo", new RepositoryProps
+                {
+                    RepositoryName = "dotnet-hello-world",
+
+                });
+            }
 
             var vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
             {
@@ -147,7 +152,7 @@ namespace MyCdk
 
             _ = new CfnOutput(this, "build deploy template", new CfnOutputProps
             {
-                Value = $"{deployTemplate.ProjectName} {deployTemplate.Stack.StackId} {bucket.BucketArn} done."
+                Value = $"{deployTemplate.ProjectName} {deployTemplate.Stack.StackId} {bucket.BucketArn} {repo.RepositoryArn}."
             });
         }
     }
