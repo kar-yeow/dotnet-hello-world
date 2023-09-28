@@ -28,7 +28,7 @@ namespace MyCdk
             //});
             var sg = new SecurityGroup(this, "MySecurityGroup", new SecurityGroupProps
             {
-                SecurityGroupName = "sg-rule-test",
+                SecurityGroupName = "dass-rule-test-security-group",
                 Vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
                 {
                     VpcId = "vpc-01fe61cb1984e4911",
