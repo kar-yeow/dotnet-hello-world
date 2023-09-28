@@ -24,6 +24,7 @@ namespace MyCdk
             var func = new Function(this, "MyVerifyIsolatedSubnetFunction", new FunctionProps
             {
                 FunctionName = "dass-rule-function-test",
+                Description = "Dummy rule function to return non compliance status",
                 Runtime = Runtime.DOTNET_6,
                 Handler = "MyRuleFunction::MyRuleFunction.DummyNonComplianceLambda::HandleRequest",
                 Code = Code.FromBucket(bucket, "my-rule-function.zip"),

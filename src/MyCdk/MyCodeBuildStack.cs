@@ -129,9 +129,9 @@ namespace MyCdk
 
             var deployTemplate = new Project(this, "MyBuildDeployTemplate", new ProjectProps
             {
-                SecurityGroups = securityGroups,
-                Vpc = vpc,
-                SubnetSelection = subnetSelection,
+                //SecurityGroups = securityGroups,
+                //Vpc = vpc,
+                //SubnetSelection = subnetSelection,
                 Role = role,
                 ProjectName = "dass-build-deploy-hello-cfst-template",
                 BuildSpec = BuildSpec.FromSourceFilename("src/template-buildspec.yml"),
