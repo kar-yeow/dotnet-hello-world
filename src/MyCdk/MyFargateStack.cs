@@ -14,10 +14,7 @@ namespace MyCdk
     {
         public MyFargateStack(Construct scope, string id, IStackProps? props = null) : base(scope, id, props)
         {
-            var role = Role.FromRoleName(this, "MyTaskRole", "my-task-role", new FromRoleNameOptions
-            {
-                DefaultPolicyName = "ato-role-dass-ecs"
-            });
+            var role = Role.FromRoleName(this, "MyTaskRole", "ato-role-dass-ecs");
             //var vpc = Vpc.FromLookup(this, "MyVpc", new VpcLookupOptions
             //{
             //    VpcName = "",
@@ -26,7 +23,7 @@ namespace MyCdk
             //});
             var cluster = new Cluster(this, "MyCluster", new ClusterProps
             {
-                ClusterName = "dass-hello-ctst-cluster"
+                ClusterName = "dass-hello-ctst-cdk-cluster"
             });
             var service = new ApplicationLoadBalancedFargateService(this, "MyFargateService", new ApplicationLoadBalancedFargateServiceProps 
             {
@@ -47,8 +44,7 @@ namespace MyCdk
                 //        OperatingSystemFamily = OperatingSystemFamily.LINUX
                 //    }
                 //}),
-                ServiceName = "dass-fargate-service",
-                
+                ServiceName = "dass-fargate-service"
             });
 
             _ = new CfnOutput(this, "MyFargateStack", new CfnOutputProps 

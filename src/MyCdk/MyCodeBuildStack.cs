@@ -5,6 +5,7 @@ using Amazon.CDK.AWS.S3;
 using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.ECR;
 using Amazon.CDK.AWS.EC2;
+using Amazon.CDK.AWS.Logs;
 
 namespace MyCdk
 {
@@ -41,7 +42,7 @@ namespace MyCdk
                         BucketName = "ato-dass-hello-bucket"
                     });
 
-            var role = Role.FromRoleArn(this, "BuildContainerRole", $"arn:aws:iam::{Account}:role/ato-role-dass-codebuild-service", new FromRoleArnOptions
+            var role = Role.FromRoleArn(this, "MyCodeBuildRole", $"arn:aws:iam::{Account}:role/ato-role-dass-codebuild-service", new FromRoleArnOptions
             {
                 Mutable = false,
                 AddGrantsToResources = false
@@ -88,6 +89,18 @@ namespace MyCdk
                     ComputeType = ComputeType.SMALL,
                     BuildImage = LinuxBuildImage.AMAZON_LINUX_2_5,
                     Privileged = true
+                },
+                Logging = new LoggingOptions
+                {
+                    CloudWatch = new CloudWatchLoggingOptions
+                    {
+                        Enabled = true,
+                        LogGroup = new LogGroup(this, "MyLogGroup", new LogGroupProps
+                        { 
+                            LogGroupName = "dass-hello-codebuild"
+                        }),
+                        Prefix = "dass-hello-codebuild"
+                    }
                 },
                 EnvironmentVariables = new Dictionary<string, IBuildEnvironmentVariable>
                 {
