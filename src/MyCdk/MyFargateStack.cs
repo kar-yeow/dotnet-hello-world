@@ -9,6 +9,8 @@ using Amazon.CDK.AWS.ECS;
 using Amazon.CDK.AWS.ECS.Patterns;
 using Amazon.CDK.AWS.ElasticLoadBalancingV2;
 using ApplicationLoadBalancerProps = Amazon.CDK.AWS.ElasticLoadBalancingV2.ApplicationLoadBalancerProps;
+using Amazon.CDK.AWS.GlobalAccelerator.Endpoints;
+using Amazon.CDK.AWS.AutoScaling;
 
 namespace MyCdk
 {
@@ -50,6 +52,13 @@ namespace MyCdk
             //    ClusterName = "dass-hello-cfst-cluster"//,
             //    //Vpc = vpc
             //});
+            //var asg = new AutoScalingGroup(this, "MyAsg", new AutoScalingGroupProps
+            //{
+            //    Vpc = vpc,
+                
+            //    InstanceType = InstanceType.Of(InstanceClass.BURSTABLE3, InstanceSize.MICRO),
+            //    MachineImage = new AmazonLinuxImage()
+            //});
             var securityGroup = SecurityGroup.FromSecurityGroupId(this, "MySg", "sg-0c5054efb308b6f24");
             var alb = new ApplicationLoadBalancer(this, "MyAlb", new ApplicationLoadBalancerProps
             {
@@ -57,7 +66,16 @@ namespace MyCdk
                 IpAddressType = IpAddressType.IPV4,
                 LoadBalancerName = "dass-hello-cdk-alb",
                 Vpc = vpc,
-                //SecurityGroup = securityGroup,
+                SecurityGroup = securityGroup,
+            });
+            var listener = alb.AddListener("MyListener", new BaseApplicationListenerProps
+            {
+                Port = 80
+            });
+            var targetGroup = listener.AddTargets("MyTargate", new AddApplicationTargetsProps
+            {
+                Port = 80,
+                //Targets = new IApplicationLoadBalancerTarget[] { asg }
             });
             var service = new ApplicationLoadBalancedFargateService(this, "MyFargateService", new ApplicationLoadBalancedFargateServiceProps 
             {
@@ -69,11 +87,11 @@ namespace MyCdk
                 //},
                 TaskImageOptions = new ApplicationLoadBalancedTaskImageOptions
                 {
-                    Image = ContainerImage.FromRegistry($"{Account}.dkr.ecr.{Region}.amazonaws.com/hellotest/dotnet-hello-world:0.0.1"),
+                    Image = ContainerImage.FromRegistry($"{Account}.dkr.ecr.{Region}.amazonaws.com/dotnet-hello-world:0.0.1"),
                     ContainerName = "dotnet-hello-world",
                     ContainerPort = 5050,
                     ExecutionRole = role,
-                    TaskRole = role,
+                    TaskRole = role,                    
                 },
                 //TaskDefinition = new FargateTaskDefinition(this, "MyTaskDefinition", new FargateTaskDefinitionProps
                 //{
@@ -86,7 +104,7 @@ namespace MyCdk
                 //        OperatingSystemFamily = OperatingSystemFamily.LINUX
                 //    }
                 //}),
-                ListenerPort = 5050,
+                ListenerPort = 80,
                 Protocol = ApplicationProtocol.HTTP,
                 LoadBalancer = alb,
                 ServiceName = "dass-fargate-service"
