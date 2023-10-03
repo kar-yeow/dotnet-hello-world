@@ -17,20 +17,19 @@ namespace MyCdk
         public MyFargateStack(Construct scope, string id, IStackProps? props = null) : base(scope, id, props)
         {
             var role = Role.FromRoleName(this, "MyTaskRole", "ato-role-dass-ecs");
-            var vpc = Vpc.FromLookup(this, "MyVpc", new VpcLookupOptions
-            {
-                VpcName = "ato-dass-dev",
-                Region = this.Region,
-                OwnerAccountId = this.Account,
-                SubnetGroupNameTag = "Public subnet"
-            });
-            var availabilityZones = new string[] { "ap-southeast-2" };
-            //var vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
+            //var vpc = Vpc.FromLookup(this, "MyVpc", new VpcLookupOptions
             //{
-            //    VpcId = "vpc-01fe61cb1984e4911",
-            //    AvailabilityZones = availabilityZones,
-            //    IsolatedSubnetIds = new string[] { "subnet-049369136ecb2bd54" }
+            //    VpcName = "ato-dass-dev",
+            //    Region = this.Region,
+            //    OwnerAccountId = this.Account,
             //});
+            var availabilityZones = new string[] { "ap-southeast-2" };
+            var vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
+            {
+                VpcId = "vpc-01fe61cb1984e4911",
+                AvailabilityZones = availabilityZones,
+                IsolatedSubnetIds = new string[] { "subnet-049369136ecb2bd54" }
+            });
             //var subnets = vpc.SelectSubnets(new SubnetSelection
             //{
             //    AvailabilityZones = availabilityZones,
@@ -66,7 +65,9 @@ namespace MyCdk
                 {
                     Image = ContainerImage.FromRegistry($"{Account}.dkr.ecr.{Region}.amazonaws.com/hellotest/dotnet-hello-world:0.0.1"),
                     ContainerName = "dotnet-hello-world",
-                    ContainerPort = 5050
+                    ContainerPort = 5050,
+                    ExecutionRole = role,
+                    TaskRole = role,
                 },
                 //TaskDefinition = new FargateTaskDefinition(this, "MyTaskDefinition", new FargateTaskDefinitionProps
                 //{
