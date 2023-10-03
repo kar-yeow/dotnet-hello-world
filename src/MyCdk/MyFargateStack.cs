@@ -37,7 +37,8 @@ namespace MyCdk
             //}).Subnets;
             var cluster = new Amazon.CDK.AWS.ECS.Cluster(this, "MyCluster", new Amazon.CDK.AWS.ECS.ClusterProps
             {
-                ClusterName = "dass-hello-ctst-cdk-cluster"
+                ClusterName = "dass-hello-ctst-cdk-cluster",
+                Vpc = vpc
             });
             //var cluster = Amazon.CDK.AWS.ECS.Cluster.FromClusterAttributes(this, "MyCluster", new Amazon.CDK.AWS.ECS.ClusterAttributes
             //{
