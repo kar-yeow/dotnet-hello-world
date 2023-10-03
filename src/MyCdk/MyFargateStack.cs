@@ -32,8 +32,8 @@ namespace MyCdk
             {
                 VpcId = "vpc-01fe61cb1984e4911",
                 AvailabilityZones = availabilityZones,
-                IsolatedSubnetIds = new string[] { "subnet-049369136ecb2bd54" },
-                IsolatedSubnetRouteTableIds = new string[] { "rtb-049c4bf4db5b9b8ce" }
+                IsolatedSubnetIds = new string[] { "subnet-049369136ecb2bd54", "subnet-07783132d0a53c5e7", "subnet-0d9bbac6f4cd2ff6f" },
+                IsolatedSubnetRouteTableIds = new string[] { "rtb-049c4bf4db5b9b8ce", "rtb-049c4bf4db5b9b8ce", "rtb-049c4bf4db5b9b8ce" }
             });
             //var subnets = vpc.SelectSubnets(new SubnetSelection
             //{
