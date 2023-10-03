@@ -55,7 +55,7 @@ namespace MyCdk
             //var asg = new AutoScalingGroup(this, "MyAsg", new AutoScalingGroupProps
             //{
             //    Vpc = vpc,
-                
+
             //    InstanceType = InstanceType.Of(InstanceClass.BURSTABLE3, InstanceSize.MICRO),
             //    MachineImage = new AmazonLinuxImage()
             //});
@@ -68,15 +68,16 @@ namespace MyCdk
                 Vpc = vpc,
                 SecurityGroup = securityGroup,
             });
-            var listener = alb.AddListener("MyListener", new BaseApplicationListenerProps
-            {
-                Port = 80
-            });
-            var targetGroup = listener.AddTargets("MyTargate", new AddApplicationTargetsProps
-            {
-                Port = 80,
-                //Targets = new IApplicationLoadBalancerTarget[] { asg }
-            });
+            //var listener = alb.AddListener("MyListener", new BaseApplicationListenerProps
+            //{
+            //    Port = 80
+            //});
+            //var targetGroup = listener.AddTargets("MyTargate", new AddApplicationTargetsProps
+            //{
+            //    Port = 80,
+            //    TargetGroupName = "dass-hello-cdk-tg",
+            //    Targets = new IApplicationLoadBalancerTarget[] { new IPAddress() }
+            //});
             var service = new ApplicationLoadBalancedFargateService(this, "MyFargateService", new ApplicationLoadBalancedFargateServiceProps 
             {
                 Cluster = cluster,
