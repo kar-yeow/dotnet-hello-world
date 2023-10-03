@@ -16,7 +16,11 @@ namespace MyCdk
     {
         public MyFargateStack(Construct scope, string id, IStackProps? props = null) : base(scope, id, props)
         {
-            var role = Role.FromRoleName(this, "MyTaskRole", "ato-role-dass-ecs");
+            var role = Role.FromRoleName(this, "MyTaskRole", "ato-role-dass-ecs", new FromRoleNameOptions
+            {
+                Mutable = false,
+                AddGrantsToResources = false
+            });
             //var vpc = Vpc.FromLookup(this, "MyVpc", new VpcLookupOptions
             //{
             //    VpcName = "ato-dass-dev",
