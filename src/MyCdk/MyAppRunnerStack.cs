@@ -26,14 +26,18 @@ namespace MyCdk
             });
             Tags.SetTag("epmcode", epmCode.ValueAsString);
 
-            var autoScalingConfiguration = new CfnAutoScalingConfiguration(this, "DassHelloAppRunnerAutoScaling", new CfnAutoScalingConfigurationProps
-            {
-                AutoScalingConfigurationName = "dass-hello-auto-scaling",
-                MaxConcurrency = 100,
-                MaxSize = 25,
-                MinSize = 1
-            });
-            var instanceRole = Role.FromRoleArn(this, "AppRunnerInstanceRole", $"arn:aws:iam::{Account}:role/ato-role-dass-apprunner-service", new FromRoleArnOptions
+            //var autoScalingConfiguration = new CfnAutoScalingConfiguration(this, "DassHelloAppRunnerAutoScaling", new CfnAutoScalingConfigurationProps
+            //{
+            //    AutoScalingConfigurationName = "dass-hello-auto-scaling",
+            //    MaxConcurrency = 100,
+            //    MaxSize = 25,
+            //    MinSize = 1
+            //});
+            var instanceRole = Role.FromRoleArn(this, 
+                    "AppRunnerInstanceRole",
+                    //$"arn:aws:iam::{Account}:role/ato-role-dass-apprunner-service",
+                    $"arn:aws:iam::{Account}:role/ato-role-dass-ecs",
+                    new FromRoleArnOptions
             {
                 Mutable = false,
                 AddGrantsToResources = false
@@ -44,7 +48,11 @@ namespace MyCdk
             //    AssumedBy = new ServicePrincipal("tasks.apprunner.amazonaws.com")
             //});
 
-            var accessRole = Role.FromRoleArn(this, "AppRunnerAccessRole", $"arn:aws:iam::{Account}:role/ato-role-dass-apprunner-service", new FromRoleArnOptions
+            var accessRole = Role.FromRoleArn(this, 
+                    "AppRunnerAccessRole",
+                    //$"arn:aws:iam::{Account}:role/ato-role-dass-apprunner-service",
+                    $"arn:aws:iam::{Account}:role/ato-role-dass-ecs",
+                    new FromRoleArnOptions
             {
                 Mutable = false,
                 AddGrantsToResources = false
@@ -57,7 +65,7 @@ namespace MyCdk
 
             var appRunner = new CfnService(this, "DassHelloAppRunnerTemplate", new CfnServiceProps{
                 ServiceName = "dass-cfst-hello-world-app-runner-service",
-                AutoScalingConfigurationArn = autoScalingConfiguration.AttrAutoScalingConfigurationArn,
+                //AutoScalingConfigurationArn = autoScalingConfiguration.AttrAutoScalingConfigurationArn,
                 InstanceConfiguration = new InstanceConfigurationProperty
                 {
                     InstanceRoleArn = instanceRole.RoleArn,
