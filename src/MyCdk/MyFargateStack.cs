@@ -39,7 +39,7 @@ namespace MyCdk
             //}).Subnets;
             var cluster = new Cluster(this, "MyCluster", new ClusterProps
             {
-                ClusterName = "dass-hello-ctst-cdk-cluster",
+                ClusterName = "dass-hello-fargate-cluster",
                 Vpc = vpc
             });
             //var cluster = Amazon.CDK.AWS.ECS.Cluster.FromClusterAttributes(this, "MyCluster", new Amazon.CDK.AWS.ECS.ClusterAttributes
@@ -59,7 +59,7 @@ namespace MyCdk
             {
                 InternetFacing = false,
                 IpAddressType = IpAddressType.IPV4,
-                LoadBalancerName = "dass-hello-cdk-alb",
+                LoadBalancerName = "dass-hello-fargate-alb",
                 Vpc = vpc,
                 SecurityGroup = securityGroup,
             });
@@ -103,7 +103,7 @@ namespace MyCdk
                 ListenerPort = 80,
                 Protocol = ApplicationProtocol.HTTP,
                 LoadBalancer = alb,
-                ServiceName = "dass-fargate-service"
+                ServiceName = "dass-hello-fargate-service"
             });
 
             _ = new CfnOutput(this, "MyFargateStack", new CfnOutputProps 
