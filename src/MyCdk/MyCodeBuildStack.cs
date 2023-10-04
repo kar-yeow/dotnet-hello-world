@@ -36,6 +36,7 @@ namespace MyCdk
             });
             Tags.SetTag("epmcode", epmCode.ValueAsString);
 
+            // Create bucket if not exists
             var bucket = Bucket.FromBucketName(this, "MyDassHelloBucket", "ato-dass-hello-bucket")
                     ?? new Bucket(this, "MyDassHelloBucket", new BucketProps
                     {
@@ -48,6 +49,7 @@ namespace MyCdk
                 AddGrantsToResources = false
             });
 
+            // Create repo if not exists
             var repo = Repository.FromRepositoryName(this, "MyHelloRepo", "dotnet-hello-world")
                     ?? new Repository(this, "MyHelloRepo", new RepositoryProps
                     {
@@ -83,7 +85,7 @@ namespace MyCdk
             {
                 Role = role,
                 BuildSpec = BuildSpec.FromSourceFilename("src/image-buildspec.yml"),
-                ProjectName = "dass-build-container-hello-cfst-image",
+                ProjectName = "dass-build-hello-container-image",
                 Environment = new BuildEnvironment
                 {
                     ComputeType = ComputeType.SMALL,
@@ -146,7 +148,7 @@ namespace MyCdk
                 //Vpc = vpc,
                 //SubnetSelection = subnetSelection,
                 Role = role,
-                ProjectName = "dass-build-deploy-hello-cfst-template",
+                ProjectName = "dass-build-hello-deploy-template",
                 BuildSpec = BuildSpec.FromSourceFilename("src/template-buildspec.yml"),
                 Environment = new BuildEnvironment
                 {

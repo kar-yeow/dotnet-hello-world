@@ -99,7 +99,7 @@ namespace MyCdk
                 }
             });
 
-            new CfnOutput(this, "app runner template", new CfnOutputProps
+            new CfnOutput(this, "MyAppRunnerStackOutput", new CfnOutputProps
             {
                 Value = $"{appRunner.ServiceName} {appRunner.Stack.StackId} {appRunner.AttrServiceUrl} done."
             });

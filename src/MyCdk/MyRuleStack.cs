@@ -8,20 +8,24 @@ using Constructs;
 
 namespace MyCdk
 {
-    public class MyCheckingStack : Stack
+    public class MyRuleStack : Stack
     {
-        public MyCheckingStack(Construct scope, SecurityGroup sg, string id, IStackProps? stackProps) : base(scope, id, stackProps)
+        public MyRuleStack(Construct scope, SecurityGroup sg, string id, IStackProps? stackProps) : base(scope, id, stackProps)
         {
             //if (!subnetToMonitor.Any())
             //{
             //    throw new Exception("subnetToMonitor is zero");
             //}
 
-            var bucket = Bucket.FromBucketName(this, "MyBucket", "ato-dass-hello-bucket");
+            var bucket = Bucket.FromBucketName(this, "MyBucket", "ato-dass-hello-bucket")
+                    ?? new Bucket(this, "MyBucket", new BucketProps
+                    {
+                        BucketName = "ato-dass-hello-bucket"
+                    });
 
             //var func = Function.FromFunctionArn(this, "MyFunction", "arn:aws:lambda:ap-southeast-2:037690295447:function:dass-hello-test");
 
-            var func = new Function(this, "MyVerifyIsolatedSubnetFunction", new FunctionProps
+            var func = new Function(this, "MyRuleFunction", new FunctionProps
             {
                 FunctionName = "dass-rule-function-test",
                 Description = "Dummy rule function to return non compliance status",
@@ -39,12 +43,12 @@ namespace MyCdk
 
             var rule = new CustomRule(this, "MyCustomRule", new CustomRuleProps
             {
-                ConfigRuleName = "dass-sg-rule",
+                ConfigRuleName = "dass-security-group-rule",
                 LambdaFunction = func,
                 RuleScope = Amazon.CDK.AWS.Config.RuleScope.FromResource(ResourceType.EC2_SECURITY_GROUP, sg.SecurityGroupId),
                 ConfigurationChanges = true,
                 Periodic = false,
-                Description = $"dass dummy rule to test custom security group"
+                Description = "DASS dummy rule to test custom security group"
             });
 
             //for (int i = 0; i < subnetToMonitor.Length; i++)
@@ -62,7 +66,7 @@ namespace MyCdk
             //}
             Tags.SetTag("compliance-checked", "true");
 
-            _ = new CfnOutput(this, "MyRuleOutput", new CfnOutputProps
+            _ = new CfnOutput(this, "MyRuleStackOutput", new CfnOutputProps
             {
                 Value = $"rule={rule.ConfigRuleId} {rule.ConfigRuleArn}, function= {func.FunctionArn} {func.FunctionName}"
             });
