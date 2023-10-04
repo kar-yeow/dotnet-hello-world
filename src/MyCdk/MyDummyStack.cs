@@ -58,7 +58,7 @@ namespace MyCdk
             //    })
             //};
 
-            var stack = new MyRuleStack(scope, sg, "MyCheckingStack", props);
+            var stack = new MyRuleStack(scope, sg, "MyRuleStack", props);
 
             _ = new CfnOutput(this, "MyDummyStackOutput", new CfnOutputProps
             {
