@@ -1,16 +1,11 @@
 ﻿using Amazon.CDK;
 using Constructs;
-using Amazon.CDK.AWS.AppRunner;
-using static Amazon.CDK.AWS.AppRunner.CfnService;
 using Amazon.CDK.AWS.IAM;
-using Amazon.CDK.AWS.CloudWatch;
 using Amazon.CDK.AWS.EC2;
 using Amazon.CDK.AWS.ECS;
 using Amazon.CDK.AWS.ECS.Patterns;
 using Amazon.CDK.AWS.ElasticLoadBalancingV2;
 using ApplicationLoadBalancerProps = Amazon.CDK.AWS.ElasticLoadBalancingV2.ApplicationLoadBalancerProps;
-using Amazon.CDK.AWS.GlobalAccelerator.Endpoints;
-using Amazon.CDK.AWS.AutoScaling;
 
 namespace MyCdk
 {
@@ -42,7 +37,7 @@ namespace MyCdk
             //    AvailabilityZones = availabilityZones,
             //    SubnetType = SubnetType.PRIVATE_ISOLATED
             //}).Subnets;
-            var cluster = new Amazon.CDK.AWS.ECS.Cluster(this, "MyCluster", new Amazon.CDK.AWS.ECS.ClusterProps
+            var cluster = new Cluster(this, "MyCluster", new ClusterProps
             {
                 ClusterName = "dass-hello-ctst-cdk-cluster",
                 Vpc = vpc
