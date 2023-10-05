@@ -24,51 +24,6 @@ namespace MyCdk
                     {
                         BucketName = "ato-dass-hello-bucket"
                     });
-            var logGroup = LogGroup.FromLogGroupName(this, "MyLogGroup", "dass-function-codebuild") 
-                    ?? new LogGroup(this, "MyLogGroup", new LogGroupProps
-                    {
-                        LogGroupName = "dass-function-codebuild",
-                        Retention = RetentionDays.ONE_MONTH
-                    });
-
-            var buildFunction = new Project(this, "MyRuleFunctionZip", new ProjectProps
-            {
-                Role = Role.FromRoleArn(this, "MyCodeBuildRole", $"arn:aws:iam::{Account}:role/ato-role-dass-codebuild-service", new FromRoleArnOptions
-                {
-                    Mutable = false,
-                    AddGrantsToResources = false
-                }),
-                BuildSpec = BuildSpec.FromSourceFilename("src/lambda-buildspec.yml"),
-                ProjectName = "dass-build-rule-lambda-function",
-                Environment = new BuildEnvironment
-                {
-                    ComputeType = ComputeType.SMALL,
-                    BuildImage = LinuxBuildImage.AMAZON_LINUX_2_5,
-                    Privileged = false
-                },
-                Logging = new LoggingOptions
-                {
-                    CloudWatch = new CloudWatchLoggingOptions
-                    {
-                        Enabled = true,
-                        LogGroup = logGroup,
-                        Prefix = "dass-function-codebuild"
-                    }
-                },
-                Source = Source.GitHub(new GitHubSourceProps
-                {
-                    Owner = "kar-yeow",
-                    Repo = "dotnet-hello-world",
-                    BranchOrRef = "add-cdk-test",
-                    Webhook = false
-                }),
-                Artifacts = Artifacts.S3(new S3ArtifactsProps
-                {
-                    Bucket = bucket,
-                    PackageZip = true,
-                    Name = "my-codebuild-rule-function.zip"
-                })
-            });
 
             var lambdaFunction = new Function(this, "MyCodeBuildRuleFunction", new FunctionProps
             {
@@ -88,7 +43,7 @@ namespace MyCdk
 
             _ = new CfnOutput(this, "MyRuleStackOutput", new CfnOutputProps
             {
-                Value = $"project={buildFunction.ProjectName} function={lambdaFunction.FunctionName}"
+                Value = $"function={lambdaFunction.FunctionName}"
             });
 
             //var rule = new CustomRule(this, "MyCustomRule", new CustomRuleProps
