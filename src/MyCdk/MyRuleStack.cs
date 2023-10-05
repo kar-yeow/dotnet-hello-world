@@ -47,9 +47,9 @@ namespace MyCdk
                         Enabled = true,
                         LogGroup = new LogGroup(this, "MyLogGroup", new LogGroupProps
                         {
-                            LogGroupName = "dass-hello-codebuild"
+                            LogGroupName = "dass-function-codebuild",
                         }),
-                        Prefix = "dass-hello-codebuild"
+                        Prefix = "dass-function-codebuild"
                     }
                 },
                 Source = Source.GitHub(new GitHubSourceProps
