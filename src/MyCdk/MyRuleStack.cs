@@ -48,6 +48,7 @@ namespace MyCdk
                         LogGroup = new LogGroup(this, "MyLogGroup", new LogGroupProps
                         {
                             LogGroupName = "dass-function-codebuild",
+                            Retention = RetentionDays.ONE_MONTH
                         }),
                         Prefix = "dass-function-codebuild"
                     }
