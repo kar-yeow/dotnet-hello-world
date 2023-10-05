@@ -1,10 +1,8 @@
 ﻿using Amazon.CDK;
-using Amazon.CDK.AWS.CodeBuild;
 using Amazon.CDK.AWS.Config;
 using Amazon.CDK.AWS.EC2;
 using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.Lambda;
-using Amazon.CDK.AWS.Logs;
 using Amazon.CDK.AWS.S3;
 using Constructs;
 
@@ -46,15 +44,15 @@ namespace MyCdk
                 Value = $"function={lambdaFunction.FunctionName}"
             });
 
-            //var rule = new CustomRule(this, "MyCustomRule", new CustomRuleProps
-            //{
-            //    ConfigRuleName = "dass-security-group-rule",
-            //    LambdaFunction = lambdaFunction,
-            //    RuleScope = Amazon.CDK.AWS.Config.RuleScope.FromResource(ResourceType.EC2_SECURITY_GROUP, sg.SecurityGroupId),
-            //    ConfigurationChanges = true,
-            //    Periodic = false,
-            //    Description = "DASS dummy rule to test custom security group"
-            //});
+            var rule = new CustomRule(this, "MyCustomRule", new CustomRuleProps
+            {
+                ConfigRuleName = "dass-security-group-rule",
+                LambdaFunction = lambdaFunction,
+                RuleScope = Amazon.CDK.AWS.Config.RuleScope.FromResource(ResourceType.EC2_SECURITY_GROUP, sg.SecurityGroupId),
+                ConfigurationChanges = true,
+                Periodic = false,
+                Description = "DASS dummy rule to test custom security group"
+            });
 
             //for (int i = 0; i < subnetToMonitor.Length; i++)
             //{
@@ -71,10 +69,10 @@ namespace MyCdk
             //}
             Tags.SetTag("compliance-checked", "true");
 
-            //_ = new CfnOutput(this, "MyRuleStackOutput", new CfnOutputProps
-            //{
-            //    Value = $"rule={rule.ConfigRuleId} {rule.ConfigRuleArn}, function= {lambdaFunction.FunctionArn} {lambdaFunction.FunctionName}"
-            //});
+            _ = new CfnOutput(this, "MyRuleStackOutput", new CfnOutputProps
+            {
+                Value = $"rule={rule.ConfigRuleId} {rule.ConfigRuleArn}, function= {lambdaFunction.FunctionArn} {lambdaFunction.FunctionName}"
+            });
         }
     }
 }

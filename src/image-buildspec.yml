@@ -56,11 +56,14 @@ phases:
 
 reports:
   codebuild-report-group:
+    discard-paths: yes
+    file-format: VISUALSTUDIOTRX
     files:
       - MyApp.Test/TestResults/hello-world.trx
 
 artifacts:
   name: hello-$APP_VERSION
+  discard-paths: yes
   files:
 #    - src/hello-world.tar
     - src/MyApp.Test/TestResults/hello-world.trx

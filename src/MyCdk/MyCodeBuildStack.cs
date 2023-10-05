@@ -138,7 +138,8 @@ namespace MyCdk
                 Artifacts = Artifacts.S3(new S3ArtifactsProps
                 {
                     Bucket = bucket,
-                    Path = "/image"
+                    Path = "/image",
+                    IncludeBuildId = false
                 })
             });
 
@@ -166,6 +167,7 @@ namespace MyCdk
                 {
                     Bucket = bucket,
                     Path = "/template",
+                    IncludeBuildId = false,
                     PackageZip = false
                 })
             });
