@@ -39,11 +39,6 @@ namespace MyCdk
                 })
             });
 
-            _ = new CfnOutput(this, "MyRuleStackOutput", new CfnOutputProps
-            {
-                Value = $"function={lambdaFunction.FunctionName}"
-            });
-
             var rule = new CustomRule(this, "MyCustomRule", new CustomRuleProps
             {
                 ConfigRuleName = "dass-security-group-rule",
