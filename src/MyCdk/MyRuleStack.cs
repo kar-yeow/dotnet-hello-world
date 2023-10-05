@@ -24,14 +24,14 @@ namespace MyCdk
                     {
                         BucketName = "ato-dass-hello-bucket"
                     });
-            var codeBuildRole = Role.FromRoleArn(this, "MyCodeBuildRole", $"arn:aws:iam::{Account}:role/ato-role-dass-codebuild-service", new FromRoleArnOptions
-            {
-                Mutable = false,
-                AddGrantsToResources = false
-            });
+
             var buildFunction = new Project(this, "MyRuleFunctionZip", new ProjectProps
             {
-                Role = codeBuildRole,
+                Role = Role.FromRoleArn(this, "MyCodeBuildRole", $"arn:aws:iam::{Account}:role/ato-role-dass-codebuild-service", new FromRoleArnOptions
+                {
+                    Mutable = false,
+                    AddGrantsToResources = false
+                }),
                 BuildSpec = BuildSpec.FromSourceFilename("src/lambda-buildspec.yml"),
                 ProjectName = "dass-build-rule-lambda-function",
                 Environment = new BuildEnvironment
@@ -67,9 +67,9 @@ namespace MyCdk
                 })
             });
 
-            var lambdaFunction = new Function(this, "MyRuleFunction", new FunctionProps
+            var lambdaFunction = new Function(this, "MyCodeBuildRuleFunction", new FunctionProps
             {
-                FunctionName = "dass-rule-function-test",
+                FunctionName = "dass-codebuild-rule-function",
                 Description = "Dummy rule function to return non compliance status",
                 Runtime = Runtime.DOTNET_6,
                 Handler = "MyRuleFunction::MyRuleFunction.DummyNonComplianceLambda::HandleRequest",
