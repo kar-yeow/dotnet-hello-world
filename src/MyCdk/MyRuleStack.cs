@@ -1,8 +1,10 @@
 ﻿using Amazon.CDK;
+using Amazon.CDK.AWS.CodeBuild;
 using Amazon.CDK.AWS.Config;
 using Amazon.CDK.AWS.EC2;
 using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.Lambda;
+using Amazon.CDK.AWS.Logs;
 using Amazon.CDK.AWS.S3;
 using Constructs;
 
@@ -22,16 +24,56 @@ namespace MyCdk
                     {
                         BucketName = "ato-dass-hello-bucket"
                     });
+            var codeBuildRole = Role.FromRoleArn(this, "MyCodeBuildRole", $"arn:aws:iam::{Account}:role/ato-role-dass-codebuild-service", new FromRoleArnOptions
+            {
+                Mutable = false,
+                AddGrantsToResources = false
+            });
+            var buildFunction = new Project(this, "MyRuleFunctionZip", new ProjectProps
+            {
+                Role = codeBuildRole,
+                BuildSpec = BuildSpec.FromSourceFilename("src/lambda-buildspec.yml"),
+                ProjectName = "dass-build-rule-lambda-function",
+                Environment = new BuildEnvironment
+                {
+                    ComputeType = ComputeType.SMALL,
+                    BuildImage = LinuxBuildImage.AMAZON_LINUX_2_5,
+                    Privileged = false
+                },
+                Logging = new LoggingOptions
+                {
+                    CloudWatch = new CloudWatchLoggingOptions
+                    {
+                        Enabled = true,
+                        LogGroup = new LogGroup(this, "MyLogGroup", new LogGroupProps
+                        {
+                            LogGroupName = "dass-hello-codebuild"
+                        }),
+                        Prefix = "dass-hello-codebuild"
+                    }
+                },
+                Source = Source.GitHub(new GitHubSourceProps
+                {
+                    Owner = "kar-yeow",
+                    Repo = "dotnet-hello-world",
+                    BranchOrRef = "add-cdk-test",
+                    Webhook = false
+                }),
+                Artifacts = Artifacts.S3(new S3ArtifactsProps
+                {
+                    Bucket = bucket,
+                    PackageZip = true,
+                    Name = "my-codebuild-rule-function.zip"
+                })
+            });
 
-            //var func = Function.FromFunctionArn(this, "MyFunction", "arn:aws:lambda:ap-southeast-2:037690295447:function:dass-hello-test");
-
-            var func = new Function(this, "MyRuleFunction", new FunctionProps
+            var lambdaFunction = new Function(this, "MyRuleFunction", new FunctionProps
             {
                 FunctionName = "dass-rule-function-test",
                 Description = "Dummy rule function to return non compliance status",
                 Runtime = Runtime.DOTNET_6,
                 Handler = "MyRuleFunction::MyRuleFunction.DummyNonComplianceLambda::HandleRequest",
-                Code = Code.FromBucket(bucket, "my-rule-function.zip"),
+                Code = Code.FromBucket(bucket, "my-codebuild-rule-function.zip"),
                 //LogRetention = RetentionDays.THREE_DAYS,
                 Timeout = Duration.Seconds(30),
                 Role = Role.FromRoleName(this, "MyFunctionRole", "ato-role-dass-lambda-rule-exec", new FromRoleNameOptions
@@ -41,15 +83,20 @@ namespace MyCdk
                 })
             });
 
-            var rule = new CustomRule(this, "MyCustomRule", new CustomRuleProps
+            _ = new CfnOutput(this, "MyRuleStackOutput", new CfnOutputProps
             {
-                ConfigRuleName = "dass-security-group-rule",
-                LambdaFunction = func,
-                RuleScope = Amazon.CDK.AWS.Config.RuleScope.FromResource(ResourceType.EC2_SECURITY_GROUP, sg.SecurityGroupId),
-                ConfigurationChanges = true,
-                Periodic = false,
-                Description = "DASS dummy rule to test custom security group"
+                Value = $"project={buildFunction.ProjectName} function={lambdaFunction.FunctionName}"
             });
+
+            //var rule = new CustomRule(this, "MyCustomRule", new CustomRuleProps
+            //{
+            //    ConfigRuleName = "dass-security-group-rule",
+            //    LambdaFunction = lambdaFunction,
+            //    RuleScope = Amazon.CDK.AWS.Config.RuleScope.FromResource(ResourceType.EC2_SECURITY_GROUP, sg.SecurityGroupId),
+            //    ConfigurationChanges = true,
+            //    Periodic = false,
+            //    Description = "DASS dummy rule to test custom security group"
+            //});
 
             //for (int i = 0; i < subnetToMonitor.Length; i++)
             //{
@@ -66,10 +113,10 @@ namespace MyCdk
             //}
             Tags.SetTag("compliance-checked", "true");
 
-            _ = new CfnOutput(this, "MyRuleStackOutput", new CfnOutputProps
-            {
-                Value = $"rule={rule.ConfigRuleId} {rule.ConfigRuleArn}, function= {func.FunctionArn} {func.FunctionName}"
-            });
+            //_ = new CfnOutput(this, "MyRuleStackOutput", new CfnOutputProps
+            //{
+            //    Value = $"rule={rule.ConfigRuleId} {rule.ConfigRuleArn}, function= {lambdaFunction.FunctionArn} {lambdaFunction.FunctionName}"
+            //});
         }
     }
 }

@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		src\cdk.json = src\cdk.json
 		src\Dockerfile = src\Dockerfile
 		src\image-buildspec.yml = src\image-buildspec.yml
+		src\lambda-buildspec.yml = src\lambda-buildspec.yml
 		src\template-buildspec.yml = src\template-buildspec.yml
 	EndProjectSection
 EndProject
@@ -19,7 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyApp.Test", "src\MyApp.Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCdk.Test", "src\MyCdk.Test\MyCdk.Test.csproj", "{1A84BB3F-A848-43BC-A527-9DBF8CFF0EE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyRuleFunction", "src\MyRuleFunction\MyRuleFunction.csproj", "{EDCD29B5-F896-4595-95C0-977840BF3FD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyRuleFunction", "src\MyRuleFunction\MyRuleFunction.csproj", "{EDCD29B5-F896-4595-95C0-977840BF3FD0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

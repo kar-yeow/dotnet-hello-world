@@ -1,0 +1,22 @@
+version: 0.2
+
+env:
+  variables:
+    APP_VERSION: 0.0.1
+
+phases:
+  install:
+    runtime-versions:
+      dotnet: 6.0
+  build:
+    commands:
+      - echo Build started on `date`
+      - cd src
+      - dotnet build MyRuleFunction
+      - dotnet publish MyRuleFunction -c Release
+
+artifacts:
+  name: my-codebuild-rule-function
+  files:
+    - src/MyRuleFunction/bin/Release/net6.0/publish
+    
