@@ -24,6 +24,12 @@ namespace MyCdk
                     {
                         BucketName = "ato-dass-hello-bucket"
                     });
+            var logGroup = LogGroup.FromLogGroupName(this, "MyLogGroup", "dass-function-codebuild") 
+                    ?? new LogGroup(this, "MyLogGroup", new LogGroupProps
+                    {
+                        LogGroupName = "dass-function-codebuild",
+                        Retention = RetentionDays.ONE_MONTH
+                    });
 
             var buildFunction = new Project(this, "MyRuleFunctionZip", new ProjectProps
             {
@@ -45,11 +51,7 @@ namespace MyCdk
                     CloudWatch = new CloudWatchLoggingOptions
                     {
                         Enabled = true,
-                        LogGroup = new LogGroup(this, "MyLogGroup", new LogGroupProps
-                        {
-                            LogGroupName = "dass-function-codebuild",
-                            Retention = RetentionDays.ONE_MONTH
-                        }),
+                        LogGroup = logGroup,
                         Prefix = "dass-function-codebuild"
                     }
                 },
