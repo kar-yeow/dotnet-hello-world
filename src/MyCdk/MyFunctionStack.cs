@@ -58,7 +58,8 @@ namespace MyCdk
                 {
                     Bucket = bucket,
                     PackageZip = true,
-                    Name = "my-codebuild-rule-function.zip"
+                    Name = "my-codebuild-rule-function.zip",
+                    IncludeBuildId = false
                 })
             });
 
