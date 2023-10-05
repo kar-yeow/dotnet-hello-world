@@ -14,9 +14,11 @@ phases:
       - cd src
       - dotnet build MyRuleFunction
       - dotnet publish MyRuleFunction -c Release
+      - ls MyRuleFunction/bin/Release/net6.0/publish
 
 artifacts:
   name: my-codebuild-rule-function
+  discard-paths: yes
   files:
-    - src/MyRuleFunction/bin/Release/net6.0/publish
+    - src/MyRuleFunction/bin/Release/net6.0/publish/*
     
