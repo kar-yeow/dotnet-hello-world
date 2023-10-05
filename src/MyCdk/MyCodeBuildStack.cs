@@ -56,6 +56,13 @@ namespace MyCdk
                         RepositoryName = "dotnet-hello-world",
 
                     });
+            // Create log group if not exists
+            var logGroup = LogGroup.FromLogGroupName(this, "MyLogGroup", "dass-hello-codebuild")
+                    ?? new LogGroup(this, "MyLogGroup", new LogGroupProps
+                    {
+                        LogGroupName = "dass-hello-codebuild",
+                        Retention = RetentionDays.ONE_MONTH
+                    });
 
             var vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
             {
@@ -97,10 +104,7 @@ namespace MyCdk
                     CloudWatch = new CloudWatchLoggingOptions
                     {
                         Enabled = true,
-                        LogGroup = new LogGroup(this, "MyLogGroup", new LogGroupProps
-                        { 
-                            LogGroupName = "dass-hello-codebuild"
-                        }),
+                        LogGroup = logGroup,
                         Prefix = "dass-hello-codebuild"
                     }
                 },
