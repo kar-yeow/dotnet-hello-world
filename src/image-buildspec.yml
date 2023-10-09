@@ -3,10 +3,10 @@ version: 0.2
 env:
   variables:
     APP_VERSION: 0.0.1
-#  parameter-store:
-#    ARTIFACTORY_USER: /dass/DummyParam
-#  secrets-manager:
-#    ARTIFACTORY_TOKEN: dass/DummyToken:DummyTokenKey
+  parameter-store:
+    ARTIFACTORY_USER: /dass/DummyParam
+  secrets-manager:
+    ARTIFACTORY_TOKEN: dass/DummyToken:DummyTokenKey
 
 phases:
   install:
@@ -27,7 +27,7 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-#      - echo dummy user=$ARTIFACTORY_USER token=$ARTIFACTORY_TOKEN...
+      - echo dummy user=$ARTIFACTORY_USER token=$ARTIFACTORY_TOKEN...
       - cd src
       - dotnet build MyApp
       - dotnet test MyApp.Test --logger "trx;LogFileName=hello-world.trx"
