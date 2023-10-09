@@ -29,18 +29,17 @@ namespace MyCdk
             var sg = new SecurityGroup(this, "MySecurityGroup", new SecurityGroupProps
             {
                 SecurityGroupName = "dass-rule-test-security-group",
-                Vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
-                {
-                    VpcId = "vpc-01fe61cb1984e4911",
-                    AvailabilityZones = new string[] { "ap-southeast-2" }
-                })
-                //Vpc = Vpc.FromLookup(this, "MyVpc", new VpcLookupOptions
+                //Vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
                 //{
-                //    VpcName = "ato-dass-dev",
-                //    Region = "ap-southeast-2",
-                //    OwnerAccountId = "037690295447",
-                //    IsDefault = true
-                //}),
+                //    VpcId = "vpc-01fe61cb1984e4911",
+                //    AvailabilityZones = new string[] { "ap-southeast-2" }
+                //})
+                Vpc = Vpc.FromLookup(this, "MyVpc", new VpcLookupOptions
+                {
+                    Region = this.Region,
+                    OwnerAccountId = this.Account,
+                    IsDefault = true
+                }),
                 //DisableInlineRules = true
             });
 
