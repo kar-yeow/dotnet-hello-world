@@ -37,8 +37,13 @@ namespace MyCdk
             Tags.SetTag("epmcode", epmCode.ValueAsString);
 
             // Create bucket if not exists
-            var bucket = Bucket.FromBucketName(this, "MyDassHelloBucket", "ato-dass-hello-bucket")
-                    ?? new Bucket(this, "MyDassHelloBucket", new BucketProps
+            var bucket = Bucket.FromBucketAttributes(this, "MyBucket", new BucketAttributes
+                    {
+                        Account = this.Account,
+                        Region = this.Region,
+                        BucketName = "ato-dass-hello-bucket"
+                    })
+                    ?? new Bucket(this, "MyBucket", new BucketProps
                     {
                         BucketName = "ato-dass-hello-bucket"
                     });

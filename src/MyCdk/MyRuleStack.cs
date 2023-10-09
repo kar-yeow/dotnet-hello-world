@@ -17,7 +17,12 @@ namespace MyCdk
             //    throw new Exception("subnetToMonitor is zero");
             //}
 
-            var bucket = Bucket.FromBucketName(this, "MyBucket", "ato-dass-hello-bucket")
+            var bucket = Bucket.FromBucketAttributes(this, "MyBucket", new BucketAttributes
+                    {
+                        Account = this.Account,
+                        Region = this.Region,
+                        BucketName = "ato-dass-hello-bucket"
+                    })
                     ?? new Bucket(this, "MyBucket", new BucketProps
                     {
                         BucketName = "ato-dass-hello-bucket"

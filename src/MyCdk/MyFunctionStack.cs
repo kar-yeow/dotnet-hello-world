@@ -11,7 +11,12 @@ namespace MyCdk
     {
         public MyFunctionStack(Construct scope, string id, IStackProps? stackProps) : base(scope, id, stackProps)
         {
-            var bucket = Bucket.FromBucketName(this, "MyBucket", "ato-dass-hello-bucket")
+            var bucket = Bucket.FromBucketAttributes(this, "MyBucket", new BucketAttributes
+                    {
+                        Account = this.Account,
+                        Region = this.Region,
+                        BucketName = "ato-dass-hello-bucket"
+                    })
                     ?? new Bucket(this, "MyBucket", new BucketProps
                     {
                         BucketName = "ato-dass-hello-bucket"
