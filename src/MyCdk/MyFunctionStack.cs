@@ -15,11 +15,11 @@ namespace MyCdk
                     {
                         Account = this.Account,
                         Region = this.Region,
-                        BucketName = "ato-dass-hello-bucket"
+                        BucketName = "ato-dass-bucket"
                     })
                     ?? new Bucket(this, "MyBucket", new BucketProps
                     {
-                        BucketName = "ato-dass-hello-bucket"
+                        BucketName = "ato-dass-bucket"
                     });
             var logGroup = LogGroup.FromLogGroupName(this, "MyLogGroup", "dass-function-codebuild") 
                     ?? new LogGroup(this, "MyLogGroup", new LogGroupProps

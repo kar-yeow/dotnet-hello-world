@@ -41,11 +41,12 @@ namespace MyCdk
                     {
                         Account = this.Account,
                         Region = this.Region,
-                        BucketName = "ato-dass-hello-bucket"
+                        BucketName = "ato-dass-bucket"
                     })
                     ?? new Bucket(this, "MyBucket", new BucketProps
                     {
-                        BucketName = "ato-dass-hello-bucket"
+                        BucketName = "ato-dass-bucket",
+                        
                     });
 
             var role = Role.FromRoleArn(this, "MyCodeBuildRole", $"arn:aws:iam::{Account}:role/ato-role-dass-codebuild-service", new FromRoleArnOptions
