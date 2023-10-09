@@ -13,7 +13,7 @@ namespace MyCdk
     {
         public MyCodeBuildStack(Construct scope, string id, IStackProps? props = null) : base(scope, id, props)
         {
-            var epmCode = new CfnParameter(this, "empcode", new CfnParameterProps
+            var epmCode = new CfnParameter(this, "epmcode", new CfnParameterProps
             {
                 Type = "String",
                 Description = "ATO project cost code",
