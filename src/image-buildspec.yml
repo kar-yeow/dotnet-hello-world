@@ -3,9 +3,9 @@ version: 0.2
 env:
   variables:
     APP_VERSION: 0.0.1
-  parameter-store:
+#  parameter-store:
 #    ARTIFACTORY_USER: /dass/DummyParam
-  secrets-manager:
+#  secrets-manager:
 #    ARTIFACTORY_TOKEN: dass/DummyToken:DummyTokenKey
 
 phases:
