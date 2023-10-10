@@ -36,7 +36,7 @@ namespace MyCdk
             {
                 AvailabilityZones = availabilityZones,
                 OnePerAz = true,
-                Subnets = vpc.PrivateSubnets
+                SubnetType = SubnetType.PRIVATE_WITH_EGRESS
             });
             var cluster = new Cluster(this, "MyCluster", new ClusterProps
             {
