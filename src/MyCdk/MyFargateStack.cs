@@ -34,9 +34,9 @@ namespace MyCdk
             //});
             var subnets = vpc.SelectSubnets(new SubnetSelection
             {
-                AvailabilityZones = availabilityZones,
+                //AvailabilityZones = availabilityZones,
                 OnePerAz = true,
-                SubnetType = SubnetType.PRIVATE_WITH_EGRESS
+                //SubnetType = SubnetType.PRIVATE_ISOLATED
             });
             var cluster = new Cluster(this, "MyCluster", new ClusterProps
             {
@@ -58,7 +58,7 @@ namespace MyCdk
             var securityGroup = SecurityGroup.FromLookupByName(this, "MySg", "Fargate", vpc);
             var alb = new ApplicationLoadBalancer(this, "MyAlb", new ApplicationLoadBalancerProps
             {
-                InternetFacing = false,
+                InternetFacing = true,
                 IpAddressType = IpAddressType.IPV4,
                 LoadBalancerName = "dass-hello-fargate-alb",
                 Vpc = vpc,
