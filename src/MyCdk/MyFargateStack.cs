@@ -24,7 +24,7 @@ namespace MyCdk
                 Region = this.Region,
                 OwnerAccountId = this.Account
             });
-            var availabilityZones = new string[] { "ap-southeast-2" };
+            var availabilityZones = new string[] { "ap-southeast-2a", "ap-southeast-2b", "ap-southeast-2c" };
             //var vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
             //{
             //    VpcId = "vpc-01fe61cb1984e4911",
