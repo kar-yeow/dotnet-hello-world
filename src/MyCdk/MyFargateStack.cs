@@ -7,6 +7,7 @@ using Amazon.CDK.AWS.ECS.Patterns;
 using Amazon.CDK.AWS.ElasticLoadBalancingV2;
 using ApplicationLoadBalancerProps = Amazon.CDK.AWS.ElasticLoadBalancingV2.ApplicationLoadBalancerProps;
 using Amazon.CDK.AWS.ECR;
+using System.Text.RegularExpressions;
 
 namespace MyCdk
 {
@@ -62,7 +63,7 @@ namespace MyCdk
                 Vpc = vpc,
                 VpcSubnets = new SubnetSelection
                 {
-                    Subnets = subnets.Subnets.Where(x => x.Ipv4CidrBlock.StartsWith("172.16.0.")).ToList().ToArray(),
+                    Subnets = subnets.Subnets.Where(x => Regex.IsMatch(x.Ipv4CidrBlock, "172\\.16\\.[0-1]\\.")).ToList().ToArray(),
                     AvailabilityZones = subnets.AvailabilityZones
                 },
                 SecurityGroup = securityGroup,
