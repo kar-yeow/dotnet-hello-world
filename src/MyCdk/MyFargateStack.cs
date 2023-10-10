@@ -24,7 +24,7 @@ namespace MyCdk
                 Region = this.Region,
                 OwnerAccountId = this.Account
             });
-            //var availabilityZones = new string[] { "ap-southeast-2" };
+            var availabilityZones = new string[] { "ap-southeast-2" };
             //var vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
             //{
             //    VpcId = "vpc-01fe61cb1984e4911",
@@ -32,11 +32,11 @@ namespace MyCdk
             //    IsolatedSubnetIds = new string[] { "subnet-049369136ecb2bd54", "subnet-07783132d0a53c5e7", "subnet-0d9bbac6f4cd2ff6f" },
             //    IsolatedSubnetRouteTableIds = new string[] { "rtb-049c4bf4db5b9b8ce", "rtb-049c4bf4db5b9b8ce", "rtb-049c4bf4db5b9b8ce" }
             //});
-            //var subnets = vpc.SelectSubnets(new SubnetSelection
-            //{
-            //    AvailabilityZones = availabilityZones,
-            //    SubnetType = SubnetType.PRIVATE_ISOLATED
-            //}).Subnets;
+            var subnets = vpc.SelectSubnets(new SubnetSelection
+            {
+                AvailabilityZones = availabilityZones,
+                Subnets = vpc.PrivateSubnets
+            });
             var cluster = new Cluster(this, "MyCluster", new ClusterProps
             {
                 ClusterName = "dass-hello-fargate-cluster",
@@ -61,6 +61,11 @@ namespace MyCdk
                 IpAddressType = IpAddressType.IPV4,
                 LoadBalancerName = "dass-hello-fargate-alb",
                 Vpc = vpc,
+                VpcSubnets = new SubnetSelection
+                {
+                    Subnets = subnets.Subnets,
+                    AvailabilityZones = subnets.AvailabilityZones
+                },
                 SecurityGroup = securityGroup,
             });
             //var listener = alb.AddListener("MyListener", new BaseApplicationListenerProps
