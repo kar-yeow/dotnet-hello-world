@@ -10,8 +10,10 @@ namespace MyCdk
             var app = new App();
             var env = new Amazon.CDK.Environment
             {
-                Account = System.Environment.GetEnvironmentVariable("AWS_ACCOUNT"),
-                Region = System.Environment.GetEnvironmentVariable("AWS_DEFAULT_REGION")
+                //Account = System.Environment.GetEnvironmentVariable("AWS_ACCOUNT"),
+                //Region = System.Environment.GetEnvironmentVariable("AWS_DEFAULT_REGION")
+                Account = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_ACCOUNT"),
+                Region = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_REGION")
             };
 
             _ = new MyCodeBuildStack(app, "MyCodeBuildStack", new StackProps
