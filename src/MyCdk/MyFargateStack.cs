@@ -63,7 +63,7 @@ namespace MyCdk
                 Vpc = vpc,
                 VpcSubnets = new SubnetSelection
                 {
-                    Subnets = subnets.Subnets.Where(x => Regex.IsMatch(x.Ipv4CidrBlock, "172\\.16\\.[0-1]\\.")).ToList().ToArray(),
+                    Subnets = subnets.Subnets.Where(x => Regex.IsMatch(x.Ipv4CidrBlock, "172\\.16\\.[0-2]\\.")).ToList().ToArray(),
                     AvailabilityZones = subnets.AvailabilityZones
                 },
                 SecurityGroup = securityGroup,
