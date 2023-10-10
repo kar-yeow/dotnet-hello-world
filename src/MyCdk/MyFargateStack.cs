@@ -6,6 +6,7 @@ using Amazon.CDK.AWS.ECS;
 using Amazon.CDK.AWS.ECS.Patterns;
 using Amazon.CDK.AWS.ElasticLoadBalancingV2;
 using ApplicationLoadBalancerProps = Amazon.CDK.AWS.ElasticLoadBalancingV2.ApplicationLoadBalancerProps;
+using Amazon.CDK.AWS.ECR;
 
 namespace MyCdk
 {
@@ -18,20 +19,19 @@ namespace MyCdk
                 Mutable = false,
                 AddGrantsToResources = false
             });
-            //var vpc = Vpc.FromLookup(this, "MyVpc", new VpcLookupOptions
-            //{
-            //    VpcName = "ato-dass-dev",
-            //    Region = this.Region,
-            //    OwnerAccountId = this.Account,
-            //});
-            var availabilityZones = new string[] { "ap-southeast-2" };
-            var vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
+            var vpc = Vpc.FromLookup(this, "MyVpc", new VpcLookupOptions
             {
-                VpcId = "vpc-01fe61cb1984e4911",
-                AvailabilityZones = availabilityZones,
-                IsolatedSubnetIds = new string[] { "subnet-049369136ecb2bd54", "subnet-07783132d0a53c5e7", "subnet-0d9bbac6f4cd2ff6f" },
-                IsolatedSubnetRouteTableIds = new string[] { "rtb-049c4bf4db5b9b8ce", "rtb-049c4bf4db5b9b8ce", "rtb-049c4bf4db5b9b8ce" }
+                Region = this.Region,
+                OwnerAccountId = this.Account
             });
+            //var availabilityZones = new string[] { "ap-southeast-2" };
+            //var vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
+            //{
+            //    VpcId = "vpc-01fe61cb1984e4911",
+            //    AvailabilityZones = availabilityZones,
+            //    IsolatedSubnetIds = new string[] { "subnet-049369136ecb2bd54", "subnet-07783132d0a53c5e7", "subnet-0d9bbac6f4cd2ff6f" },
+            //    IsolatedSubnetRouteTableIds = new string[] { "rtb-049c4bf4db5b9b8ce", "rtb-049c4bf4db5b9b8ce", "rtb-049c4bf4db5b9b8ce" }
+            //});
             //var subnets = vpc.SelectSubnets(new SubnetSelection
             //{
             //    AvailabilityZones = availabilityZones,
@@ -54,7 +54,7 @@ namespace MyCdk
             //    InstanceType = InstanceType.Of(InstanceClass.BURSTABLE3, InstanceSize.MICRO),
             //    MachineImage = new AmazonLinuxImage()
             //});
-            var securityGroup = SecurityGroup.FromSecurityGroupId(this, "MySg", "sg-0c5054efb308b6f24");
+            var securityGroup = SecurityGroup.FromLookupByName(this, "MySg", "Fargate", vpc);
             var alb = new ApplicationLoadBalancer(this, "MyAlb", new ApplicationLoadBalancerProps
             {
                 InternetFacing = false,
@@ -83,7 +83,7 @@ namespace MyCdk
                 //},
                 TaskImageOptions = new ApplicationLoadBalancedTaskImageOptions
                 {
-                    Image = ContainerImage.FromRegistry($"{Account}.dkr.ecr.{Region}.amazonaws.com/dotnet-hello-world:0.0.1"),
+                    Image = ContainerImage.FromEcrRepository(Repository.FromRepositoryName(this, "MyRepo", "dotnet-hello-world"), "0.0.1"),
                     ContainerName = "dotnet-hello-world",
                     ContainerPort = 5050,
                     ExecutionRole = role,
