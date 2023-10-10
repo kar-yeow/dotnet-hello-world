@@ -35,6 +35,7 @@ namespace MyCdk
             var subnets = vpc.SelectSubnets(new SubnetSelection
             {
                 AvailabilityZones = availabilityZones,
+                OnePerAz = true,
                 Subnets = vpc.PrivateSubnets
             });
             var cluster = new Cluster(this, "MyCluster", new ClusterProps
