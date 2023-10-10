@@ -37,8 +37,7 @@ namespace MyCdk
                 Vpc = Vpc.FromLookup(this, "MyVpc", new VpcLookupOptions
                 {
                     Region = this.Region,
-                    OwnerAccountId = this.Account,
-                    IsDefault = true
+                    OwnerAccountId = this.Account
                 }),
                 //DisableInlineRules = true
             });
