@@ -15,7 +15,7 @@ namespace MyCdk.Test
             {
                 ["Environment"] = new Dictionary<string, object>
                 {
-                    ["ComputeType"] = "BUILD_GENERAL1_MEDIUM",
+                    ["ComputeType"] = "BUILD_GENERAL1_SMALL",
                     ["EnvironmentVariables"] = new Dictionary<string, object>[]
                     {
                         new Dictionary<string, object>
@@ -62,7 +62,7 @@ namespace MyCdk.Test
             var template = Template.FromStack(stack);
             template.HasResourceProperties("AWS::AppRunner::Service", new Dictionary<string, object>
             {
-                ["ServiceName"] = "dass-cfst-hello-world-app-runner-service",
+                ["ServiceName"] = "dass-hello-apprunner-service",
                 ["SourceConfiguration"] = new Dictionary<string, object>
                 {
                     ["ImageRepository"] = new Dictionary<string, object>
