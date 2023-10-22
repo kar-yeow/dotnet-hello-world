@@ -8,6 +8,7 @@ namespace MyCdk
         public static void Main(string[] args)
         {
             var app = new App();
+            var synthesizer = new BootstraplessSynthesizer();
             var env = new Amazon.CDK.Environment
             {
                 //Account = System.Environment.GetEnvironmentVariable("AWS_ACCOUNT"),
@@ -16,34 +17,40 @@ namespace MyCdk
                 Region = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_REGION")
             };
 
+
             _ = new MyCodeBuildStack(app, "MyCodeBuildStack", new StackProps
             {
                 StackName = $"dass-build-image-stack",
-                Env = env
+                Env = env,
+                Synthesizer = synthesizer
             });
 
             _ = new MyAppRunnerStack(app, "MyAppRunnerStack", new StackProps
             {
                 StackName = $"dass-build-template-stack",
-                Env = env
+                Env = env,
+                Synthesizer = synthesizer
             });
 
             _ = new MyFargateStack(app, "MyFargateStack", new StackProps
             {
                 StackName = $"dass-build-fargate-template-stack",
-                Env = env
+                Env = env,
+                Synthesizer = synthesizer
             });
 
             _ = new MyFunctionStack(app, "MyFunctionStack", new StackProps
             {
                 StackName = $"dass-hello-function-stack",
-                Env = env
+                Env = env,
+                Synthesizer = synthesizer
             });
 
             _ = new MyDummyStack(app, "MyDummyStack", new StackProps
             {
                 StackName = $"dass-hello-dummy-stack",
-                Env = env
+                Env = env,
+                Synthesizer = synthesizer
             });
 
             app.Synth();

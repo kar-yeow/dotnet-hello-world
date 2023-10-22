@@ -3,10 +3,6 @@ version: 0.2
 env:
   variables:
     APP_VERSION: 0.0.1
-  parameter-store:
-    ARTIFACTORY_USER: /dass/DummyParam
-  secrets-manager:
-    ARTIFACTORY_TOKEN: dass/DummyToken:DummyTokenKey
 
 phases:
   install:
@@ -21,13 +17,10 @@ phases:
       - TAGNAME=dotnet-hello-world:$APP_VERSION 
       - echo $AWS_DEFAULT_REGION $AWS_ACCOUNT_ID 
       - echo $ECR_REPO $SNS_TOPIC
-      - echo $ARTIFACTORY_TOKEN
-#      - echo $(aws ecr get-login-password)
-#      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+
   build:
     commands:
       - echo Build started on `date`
-      - echo dummy user=$ARTIFACTORY_USER token=$ARTIFACTORY_TOKEN...
       - cd src
       - dotnet build MyApp
       - dotnet test MyApp.Test --logger "trx;LogFileName=hello-world.trx"

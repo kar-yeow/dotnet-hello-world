@@ -8,7 +8,6 @@ phases:
     commands:
       - pwd
       - cd src
-#      - curl artf-app-prod-9ba2c57a23df66e8.elb.ap-southeast-2.amazonaws.com
       - dotnet build MyCdk
       - dotnet test MyCdk.Test --logger "trx;LogFileName=mycdk.trx"
       - cdk synth MyAppRunnerStack > my-apprunner-stack-template.yml

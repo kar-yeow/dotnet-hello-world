@@ -21,51 +21,39 @@ namespace MyCdk
             {
                 Type = "String",
                 Description = "Application software version to deploy",
-                AllowedValues = new string[] { "0.0.1", "0.0.2" },
+                AllowedValues = new string[] { "0.0.1", "0.0.2", "0.0.3" },
                 Default = "0.0.1"
             });
             Tags.SetTag("epmcode", epmCode.ValueAsString);
 
-            //var autoScalingConfiguration = new CfnAutoScalingConfiguration(this, "DassHelloAppRunnerAutoScaling", new CfnAutoScalingConfigurationProps
-            //{
-            //    AutoScalingConfigurationName = "dass-hello-auto-scaling",
-            //    MaxConcurrency = 100,
-            //    MaxSize = 25,
-            //    MinSize = 1
-            //});
+            var autoScalingConfiguration = new CfnAutoScalingConfiguration(this, "MyHelloAppRunnerAutoScaling", new CfnAutoScalingConfigurationProps
+            {
+                AutoScalingConfigurationName = "dass-hello-auto-scaling",
+                MaxConcurrency = 100,
+                MaxSize = 25,
+                MinSize = 1
+            });
             var instanceRole = Role.FromRoleArn(this, 
                     "AppRunnerInstanceRole",
-                    //$"arn:aws:iam::{Account}:role/ato-role-dass-apprunner-service",
-                    $"arn:aws:iam::{Account}:role/ato-role-dass-ecs",
+                    $"arn:aws:iam::{Account}:role/ato-role-dass-instance-apprunner",
                     new FromRoleArnOptions
             {
                 Mutable = false,
                 AddGrantsToResources = false
             });
-
-            //var instanceRole = new Role(this, "DassHelloAppRunnerInstanceRole", new RoleProps
-            //{
-            //    AssumedBy = new ServicePrincipal("tasks.apprunner.amazonaws.com")
-            //});
 
             var accessRole = Role.FromRoleArn(this, 
                     "AppRunnerAccessRole",
-                    //$"arn:aws:iam::{Account}:role/ato-role-dass-apprunner-service",
-                    $"arn:aws:iam::{Account}:role/ato-role-dass-ecs",
+                    $"arn:aws:iam::{Account}:role/ato-role-dass-ecr",
                     new FromRoleArnOptions
             {
                 Mutable = false,
                 AddGrantsToResources = false
             });
 
-            //var accessRole = new Role(this, "DassHelloAppRunnerBuildRole", new RoleProps
-            //{
-            //    AssumedBy = new ServicePrincipal("build.apprunner.amazonaws.com")
-            //});
-
-            var appRunner = new CfnService(this, "DassHelloAppRunnerTemplate", new CfnServiceProps{
-                ServiceName = "dass-cfst-hello-world-app-runner-service",
-                //AutoScalingConfigurationArn = autoScalingConfiguration.AttrAutoScalingConfigurationArn,
+            var appRunner = new CfnService(this, "MyAppRunnerService", new CfnServiceProps{
+                ServiceName = "dass-hello-apprunner-service",
+                AutoScalingConfigurationArn = autoScalingConfiguration.AttrAutoScalingConfigurationArn,
                 InstanceConfiguration = new InstanceConfigurationProperty
                 {
                     InstanceRoleArn = instanceRole.RoleArn,
@@ -92,10 +80,10 @@ namespace MyCdk
                 {
                     Protocol = "HTTP",
                     Path = "/",
-                    HealthyThreshold = 1,
+                    HealthyThreshold = 2,
                     UnhealthyThreshold = 5,
-                    Timeout = 2,
-                    Interval = 10,
+                    Timeout = 5,
+                    Interval = 20,
                 }
             });
 

@@ -4,7 +4,6 @@ using Amazon.CDK.AWS.CodeBuild;
 using Amazon.CDK.AWS.S3;
 using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.ECR;
-using Amazon.CDK.AWS.EC2;
 using Amazon.CDK.AWS.Logs;
 
 namespace MyCdk
@@ -70,30 +69,6 @@ namespace MyCdk
                         Retention = RetentionDays.ONE_MONTH
                     });
 
-            var vpc = Vpc.FromVpcAttributes(this, "MyVpc", new VpcAttributes
-            {
-                VpcId = "vpc-01fe61cb1984e4911",
-                AvailabilityZones = new string[] { "ap-southeast-2" }
-            });
-            var securityGroups = new ISecurityGroup[]
-            {
-                SecurityGroup.FromSecurityGroupId(this, "MySg", "sg-049cd86f2cc007247", new SecurityGroupImportOptions
-                {
-                    Mutable = false
-                })
-            };
-            var subnetSelection = new SubnetSelection
-            {
-                Subnets = new ISubnet[]
-                {
-                    Subnet.FromSubnetAttributes(this, "MySubnet", new SubnetAttributes
-                    {
-                        SubnetId = "subnet-049369136ecb2bd54",
-                        RouteTableId = "rtb-049c4bf4db5b9b8ce"
-                    })
-                }
-            };
-
             var buildImage = new Project(this, "MyBuildContainerImage", new ProjectProps
             {
                 Role = role,
@@ -155,9 +130,6 @@ namespace MyCdk
 
             var deployTemplate = new Project(this, "MyBuildDeployTemplate", new ProjectProps
             {
-                //SecurityGroups = securityGroups,
-                //Vpc = vpc,
-                //SubnetSelection = subnetSelection,
                 Role = role,
                 ProjectName = "dass-build-hello-deploy-template",
                 BuildSpec = BuildSpec.FromSourceFilename("src/template-buildspec.yml"),
