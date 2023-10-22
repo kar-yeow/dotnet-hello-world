@@ -20,6 +20,7 @@ reports:
       - src/MyCdk.Test/TestResults/mycdk.trx
 
 artifacts:
+  name: my-apprunner-stack-template
   discard-paths: yes
   files:
     - src/my-apprunner-stack-template.yml

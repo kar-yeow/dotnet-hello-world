@@ -31,7 +31,7 @@ phases:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image $NAME...
-#      - docker save $NAME -o hello-world.tar 
+      - docker save $NAME -o hello-world.tar 
       - |
         if [ $SAVE_IMAGE = "true" ]; then
           echo Logging in to Amazon ECR...
@@ -40,11 +40,6 @@ phases:
           docker push $ECR_REPO/$TAGNAME
         fi 
 #      - aws sns publish --topic-arn ${SNS_TOPIC} --message "Build ${CODEBUILD_BUILD_ID} done."
-#    finally:
-#      - |
-#        if [ $SAVE_IMAGE != "true"]; then
-#          docker rmi $ECR_REPO/$NAME
-#        fi
 
 reports:
   codebuild-report-group:
@@ -57,6 +52,6 @@ artifacts:
   name: hello-$APP_VERSION
   discard-paths: yes
   files:
-#    - src/hello-world.tar
+    - src/hello-world.tar
     - src/MyApp.Test/TestResults/hello-world.trx
     
