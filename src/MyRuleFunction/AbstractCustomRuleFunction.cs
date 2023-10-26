@@ -22,8 +22,10 @@ namespace MyRuleFunction
         }
 
         public async Task HandleRequest(ConfigEvent e, ILambdaContext c)
-        { 
+        {
+            c.Logger.LogInformation($"Handle request called for {e.ConfigRuleName}");
             InvokeEvent ie = GetInvokeEvent(e);
+            c.Logger.LogInformation($"my lambda function called {ie.MessageType} {ie.ConfigurationItem?.ResourceName} ");
             if (ie.ConfigurationItem == null ||  ie.MessageType != MessageType.ConfigurationItemChangeNotification.Value) 
             {
                 throw new Exception($"Events with the message type {ie.MessageType} are not evaluated for this Config rule.");

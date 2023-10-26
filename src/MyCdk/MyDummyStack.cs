@@ -26,6 +26,11 @@ namespace MyCdk
             //    },
             //    MaxAzs = 2
             //});
+            var vpc = Vpc.FromLookup(this, "MyVpc", new VpcLookupOptions
+            {
+                Region = this.Region,
+                OwnerAccountId = this.Account
+            });
             var sg = new SecurityGroup(this, "MySecurityGroup", new SecurityGroupProps
             {
                 SecurityGroupName = "dass-rule-test-security-group",
@@ -34,11 +39,7 @@ namespace MyCdk
                 //    VpcId = "vpc-01fe61cb1984e4911",
                 //    AvailabilityZones = new string[] { "ap-southeast-2" }
                 //})
-                Vpc = Vpc.FromLookup(this, "MyVpc", new VpcLookupOptions
-                {
-                    Region = this.Region,
-                    OwnerAccountId = this.Account
-                }),
+                Vpc = vpc
                 //DisableInlineRules = true
             });
 
@@ -56,11 +57,11 @@ namespace MyCdk
             //    })
             //};
 
-            var stack = new MyRuleStack(scope, sg, "MyRuleStack", props);
+            //var stack = new MyRuleStack(scope, sg, "MyRuleStack", props);
 
             _ = new CfnOutput(this, "MyDummyStackOutput", new CfnOutputProps
             {
-                Value = $"Stack name= {stack.StackName}, sg={sg.SecurityGroupId}"
+                Value = $"Stack name= {this.StackName}, sg={sg.SecurityGroupId}"
             });
         }
     }

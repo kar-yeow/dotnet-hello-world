@@ -10,7 +10,7 @@ namespace MyCdk
 {
     public class MyRuleStack : Stack
     {
-        public MyRuleStack(Construct scope, SecurityGroup sg, string id, IStackProps? stackProps) : base(scope, id, stackProps)
+        public MyRuleStack(Construct scope, ISecurityGroup sg, string id, IStackProps? stackProps) : base(scope, id, stackProps)
         {
             //if (!subnetToMonitor.Any())
             //{
@@ -46,7 +46,7 @@ namespace MyCdk
 
             var rule = new CustomRule(this, "MyCustomRule", new CustomRuleProps
             {
-                ConfigRuleName = "dass-security-group-rule",
+                ConfigRuleName = $"dass-security-group-rule-{sg.SecurityGroupId}",
                 LambdaFunction = lambdaFunction,
                 RuleScope = Amazon.CDK.AWS.Config.RuleScope.FromResource(ResourceType.EC2_SECURITY_GROUP, sg.SecurityGroupId),
                 ConfigurationChanges = true,
@@ -71,7 +71,7 @@ namespace MyCdk
 
             _ = new CfnOutput(this, "MyRuleStackOutput", new CfnOutputProps
             {
-                Value = $"rule={rule.ConfigRuleId} {rule.ConfigRuleArn}, function= {lambdaFunction.FunctionArn} {lambdaFunction.FunctionName}"
+                Value = $"rule={rule.ConfigRuleName}, function= {lambdaFunction.FunctionArn} {lambdaFunction.FunctionName}"
             });
         }
     }
