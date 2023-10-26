@@ -23,13 +23,13 @@ namespace MyRuleFunction
 
         public async Task HandleRequest(ConfigEvent e, ILambdaContext c)
         {
-            c.Logger.LogError($"Handle request called for {e.ConfigRuleName}");
-            c.Logger.LogCritical($"invoke event: {e.InvokingEvent}");
+            Console.WriteLine($"Handle request called for {e.ConfigRuleName}");
+            Console.WriteLine($"invoke event: {e.InvokingEvent}");
             InvokeEvent ie = GetInvokeEvent(e);
-            c.Logger.LogInformation($"my lambda function called {ie.MessageType} {ie.ConfigurationItem?.ResourceName} ");
+            Console.WriteLine($"my lambda function called {ie.MessageType} {ie.ConfigurationItem?.ResourceName} ");
             if (ie.ConfigurationItem == null ||  ie.MessageType != MessageType.ConfigurationItemChangeNotification.Value) 
             {
-                throw new Exception($"Events with the message type {ie.MessageType} are not evaluated for this Config rule.");
+                throw new Exception($"Events with the message type {ie.MessageType} are not evaluated for this Config rule {e.InvokingEvent}.");
             }
             ComplianceType result = EvaluateCompliance(e, ie, c);
 
@@ -38,10 +38,19 @@ namespace MyRuleFunction
 
         protected InvokeEvent GetInvokeEvent(ConfigEvent e)
         {
-            var ie = JsonConvert.DeserializeObject<InvokeEvent>(e.InvokingEvent);
-            if (ie == null)
+            InvokeEvent? ie;
+            try
             {
-                throw new Exception($"Deserialize the InvokingEvent returned a failed. {e.InvokingEvent}");
+                if (true) throw new Exception($"json={e.InvokingEvent}");
+                ie = JsonConvert.DeserializeObject<InvokeEvent>(e.InvokingEvent);
+                if (ie == null)
+                {
+                    throw new Exception($"Deserialize the InvokingEvent returned a failed. {e.InvokingEvent}");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Deserialize the InvokingEvent returned a failed. {ex.Message} {e.InvokingEvent}");
             }
             return ie;
         }
