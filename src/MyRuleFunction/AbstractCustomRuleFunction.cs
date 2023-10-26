@@ -23,7 +23,8 @@ namespace MyRuleFunction
 
         public async Task HandleRequest(ConfigEvent e, ILambdaContext c)
         {
-            c.Logger.LogInformation($"Handle request called for {e.ConfigRuleName}");
+            c.Logger.LogError($"Handle request called for {e.ConfigRuleName}");
+            c.Logger.LogCritical($"invoke event: {e.InvokingEvent}");
             InvokeEvent ie = GetInvokeEvent(e);
             c.Logger.LogInformation($"my lambda function called {ie.MessageType} {ie.ConfigurationItem?.ResourceName} ");
             if (ie.ConfigurationItem == null ||  ie.MessageType != MessageType.ConfigurationItemChangeNotification.Value) 
