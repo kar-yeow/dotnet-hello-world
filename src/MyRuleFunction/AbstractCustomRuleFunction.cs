@@ -24,8 +24,7 @@ namespace MyRuleFunction
 
         public async Task HandleRequest(ConfigEvent e, ILambdaContext c)
         {
-            Console.WriteLine($"Handle request called for {e.ConfigRuleName}");
-            Console.WriteLine($"Invoke event: {e.InvokingEvent}");
+            Console.WriteLine($"Handle request {e.ConfigRuleName} {e.InvokingEvent}");
             InvokeEvent ie = GetInvokeEvent(e);
             if (ie.ConfigurationItem != null && ie.MessageType == MessageType.ConfigurationItemChangeNotification.Value)
             {
@@ -37,18 +36,10 @@ namespace MyRuleFunction
 
         protected InvokeEvent GetInvokeEvent(ConfigEvent e)
         {
-            InvokeEvent? ie;
-            try
+            InvokeEvent? ie = JsonConvert.DeserializeObject<InvokeEvent>(e.InvokingEvent);
+            if (ie == null)
             {
-                ie = JsonConvert.DeserializeObject<InvokeEvent>(e.InvokingEvent);
-                if (ie == null)
-                {
-                    throw new Exception($"Deserialize the InvokingEvent returned a failed. {e.InvokingEvent}");
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Deserialize the InvokingEvent returned a failed. {ex.Message} {e.InvokingEvent}");
+                throw new Exception($"Deserialize the InvokingEvent returned a null. {e.InvokingEvent}");
             }
             return ie;
         }
