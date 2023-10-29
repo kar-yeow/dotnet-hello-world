@@ -27,13 +27,12 @@ namespace MyRuleFunction
             Console.WriteLine($"Handle request called for {e.ConfigRuleName}");
             Console.WriteLine($"Invoke event: {e.InvokingEvent}");
             InvokeEvent ie = GetInvokeEvent(e);
-            if (ie.ConfigurationItem == null ||  ie.MessageType != MessageType.ConfigurationItemChangeNotification.Value) 
+            if (ie.ConfigurationItem != null && ie.MessageType == MessageType.ConfigurationItemChangeNotification.Value)
             {
-                throw new Exception($"Events with the message type {ie.MessageType} are not evaluated for this Config rule {e.InvokingEvent}.");
-            }
-            ComplianceType result = EvaluateCompliance(e, ie, c);
+                ComplianceType result = EvaluateCompliance(e, ie, c);
 
-            await RegisterEvaluationResult(e, ie.ConfigurationItem, result);
+                await RegisterEvaluationResult(e, ie.ConfigurationItem, result);
+            }
         }
 
         protected InvokeEvent GetInvokeEvent(ConfigEvent e)
@@ -98,7 +97,6 @@ namespace MyRuleFunction
         protected ComplianceType EvaluateCompliance(ConfigEvent e, InvokeEvent ie, ILambdaContext c)
 	    {
             var result = ComplianceType.NON_COMPLIANT;
-            //c.Logger.Log($"msg={ie.MessageType} resource id={ie.ConfigurationItem?.ResourceId} resource name={ie.ConfigurationItem?.ResourceName}");
             if (ie.ConfigurationItem == null || IsNotApplicable(e, ie.ConfigurationItem))
 		    {
 			    result = ComplianceType.NOT_APPLICABLE;
@@ -107,7 +105,7 @@ namespace MyRuleFunction
 		    {
 			    result = ComplianceType.COMPLIANT;
 		    }
-            c.Logger.Log($"{e.ConfigRuleName} compliance result={result}");
+            Console.WriteLine($"{e.ConfigRuleName} compliance result={result}");
             return result;
 	    }
     }

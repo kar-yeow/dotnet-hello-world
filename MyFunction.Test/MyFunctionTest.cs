@@ -58,11 +58,45 @@ namespace MyFunction.Test
 
     public class MyFunctionTest
     {
-        [Fact]
-        public async Task ShouldHandleRequest()
+        private MyDummyNonComplianceLambda _lambda;
+
+        public MyFunctionTest()
         {
-            var lambda = new MyDummyNonComplianceLambda();
-            await lambda.HandleRequest(new Amazon.Lambda.ConfigEvents.ConfigEvent
+            _lambda = new MyDummyNonComplianceLambda();
+        }
+
+        [Fact]
+        public async Task ShouldBeNotApplicable()
+        {
+            await _lambda.HandleRequest(new Amazon.Lambda.ConfigEvents.ConfigEvent
+            {
+                ResultToken = "ResultToken",
+                AccountId = "012345678901",
+                ConfigRuleId = "1",
+                ConfigRuleArn = "arn:rule",
+                EventLeftScope = false,
+                ConfigRuleName = "test-rule",
+                ExecutionRoleArn = "arn:exec",
+                RuleParameters = "",
+                InvokingEvent = @"
+{
+    ""awsAccountId"": ""046037307781"",
+    ""notificationCreationTime"": ""2023-10-29T21:25:53.230Z"",
+    ""messageType"": ""ScheduledNotification"",
+    ""recordVersion"": ""1.0""
+}"
+            },
+            new MyLambdaContext
+            {
+
+            });
+            Assert.Null(_lambda.EvaluationsRequest);
+        }
+
+        [Fact]
+        public async Task ShouldBeNonCompliance()
+        {
+            await _lambda.HandleRequest(new Amazon.Lambda.ConfigEvents.ConfigEvent
             {
                 ResultToken = "ResultToken",
                 AccountId = "012345678901",
@@ -129,7 +163,14 @@ namespace MyFunction.Test
             {
 
             });
-            Assert.Equal("ResultToken", lambda.EvaluationsRequest?.ResultToken);
+            Assert.NotNull(_lambda.EvaluationsRequest);
+            if (_lambda.EvaluationsRequest != null)
+            {
+                List<Evaluation> evaluations = _lambda.EvaluationsRequest.Evaluations;
+                Assert.Equal("ResultToken", _lambda.EvaluationsRequest.ResultToken);
+                Amazon.ConfigService.ComplianceType complianceType = evaluations.First().ComplianceType;
+                Assert.Equal("NON_COMPLIANT", complianceType.ToString());
+            }
         }
     }
 }
