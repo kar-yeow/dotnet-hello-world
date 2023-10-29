@@ -3,13 +3,14 @@ using Amazon.ConfigService;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.ConfigEvents;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 namespace MyRuleFunction
 {
     public class InvokeEvent
     {
-        public ConfigurationItem? ConfigurationItem { get; set; }
+        public JObject? ConfigurationItem { get; set; }
         public string? MessageType { get; set; }
     }
 
@@ -24,9 +25,8 @@ namespace MyRuleFunction
         public async Task HandleRequest(ConfigEvent e, ILambdaContext c)
         {
             Console.WriteLine($"Handle request called for {e.ConfigRuleName}");
-            Console.WriteLine($"invoke event: {e.InvokingEvent}");
+            Console.WriteLine($"Invoke event: {e.InvokingEvent}");
             InvokeEvent ie = GetInvokeEvent(e);
-            Console.WriteLine($"my lambda function called {ie.MessageType} {ie.ConfigurationItem?.ResourceName} ");
             if (ie.ConfigurationItem == null ||  ie.MessageType != MessageType.ConfigurationItemChangeNotification.Value) 
             {
                 throw new Exception($"Events with the message type {ie.MessageType} are not evaluated for this Config rule {e.InvokingEvent}.");
@@ -41,7 +41,6 @@ namespace MyRuleFunction
             InvokeEvent? ie;
             try
             {
-                if (true) throw new Exception($"json={e.InvokingEvent}");
                 ie = JsonConvert.DeserializeObject<InvokeEvent>(e.InvokingEvent);
                 if (ie == null)
                 {
@@ -55,24 +54,27 @@ namespace MyRuleFunction
             return ie;
         }
 
-        protected async Task RegisterEvaluationResult(ConfigEvent e, ConfigurationItem ci, ComplianceType result)
+        protected virtual async Task<PutEvaluationsResponse> PutEvaluationsAsync(PutEvaluationsRequest request)
+        {
+            return await _config.PutEvaluationsAsync(request);
+        }
+
+        protected async Task RegisterEvaluationResult(ConfigEvent e, JObject ci, ComplianceType result)
         {
             Evaluation evaluation = new Evaluation
             {
-                ComplianceResourceId = ci.ResourceId,
-                ComplianceResourceType = ci.ResourceType,
-                OrderingTimestamp = ci.ConfigurationItemCaptureTime,
+                ComplianceResourceId = ci["resourceId"]?.Value<string>(),
+                ComplianceResourceType = ci["resourceType"]?.Value<string>(),
+                OrderingTimestamp = ci["configurationItemCaptureTime"]?.Value<DateTime>() ?? DateTime.Now,
                 ComplianceType = result,
                 Annotation = e.ConfigRuleName
             };
 
-            PutEvaluationsRequest request = new PutEvaluationsRequest
+            PutEvaluationsResponse response = await PutEvaluationsAsync(new PutEvaluationsRequest
             {
                 Evaluations = { evaluation },
                 ResultToken = e.ResultToken
-            };
-
-            PutEvaluationsResponse response = await _config.PutEvaluationsAsync(request);
+            });
 
             // Ends the function execution if any evaluation results are not successfully reported.
             if (response.FailedEvaluations.Any())
@@ -82,11 +84,12 @@ namespace MyRuleFunction
             }
         }
 
-        protected bool IsNotApplicable(ConfigEvent e, ConfigurationItem? ci)
+        protected bool IsNotApplicable(ConfigEvent e, JObject ci)
         {
-            var status = ci?.ConfigurationItemStatus;
-            return e.EventLeftScope || status == ConfigurationItemStatus.ResourceDeleted 
-                    || status == ConfigurationItemStatus.ResourceNotRecorded 
+            var token = ci["configurationItemStatus"];
+            var status = token == null ? null : ConfigurationItemStatus.FindValue(token.Value<string>());
+            return e.EventLeftScope || status == ConfigurationItemStatus.ResourceDeleted
+                    || status == ConfigurationItemStatus.ResourceNotRecorded
                     || status == ConfigurationItemStatus.ResourceDeletedNotRecorded;
         }
 
@@ -95,8 +98,8 @@ namespace MyRuleFunction
         protected ComplianceType EvaluateCompliance(ConfigEvent e, InvokeEvent ie, ILambdaContext c)
 	    {
             var result = ComplianceType.NON_COMPLIANT;
-            c.Logger.Log($"msg={ie.MessageType} resource id={ie.ConfigurationItem?.ResourceId} resource name={ie.ConfigurationItem?.ResourceName}");
-            if (IsNotApplicable(e, ie.ConfigurationItem))
+            //c.Logger.Log($"msg={ie.MessageType} resource id={ie.ConfigurationItem?.ResourceId} resource name={ie.ConfigurationItem?.ResourceName}");
+            if (ie.ConfigurationItem == null || IsNotApplicable(e, ie.ConfigurationItem))
 		    {
 			    result = ComplianceType.NOT_APPLICABLE;
 		    }

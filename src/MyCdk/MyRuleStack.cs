@@ -48,7 +48,7 @@ namespace MyCdk
             {
                 ConfigRuleName = $"dass-security-group-rule-{sg.SecurityGroupId}",
                 LambdaFunction = lambdaFunction,
-                RuleScope = Amazon.CDK.AWS.Config.RuleScope.FromResource(ResourceType.EC2_SECURITY_GROUP, sg.SecurityGroupId),
+                //RuleScope = Amazon.CDK.AWS.Config.RuleScope.FromResource(ResourceType.EC2_SECURITY_GROUP, sg.SecurityGroupId),
                 ConfigurationChanges = true,
                 Periodic = false,
                 Description = "DASS dummy rule to test custom security group"
