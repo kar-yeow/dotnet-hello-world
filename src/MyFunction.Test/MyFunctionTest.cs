@@ -49,6 +49,7 @@ namespace MyFunction.Test
         protected override async Task<PutEvaluationsResponse> PutEvaluationsAsync(PutEvaluationsRequest request)
         {
             EvaluationsRequest = request;
+            await Task.CompletedTask;
             return new PutEvaluationsResponse
             {
                 HttpStatusCode = System.Net.HttpStatusCode.OK,

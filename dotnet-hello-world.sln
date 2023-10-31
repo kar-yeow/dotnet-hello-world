@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCdk.Test", "src\MyCdk.Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyRuleFunction", "src\MyRuleFunction\MyRuleFunction.csproj", "{EDCD29B5-F896-4595-95C0-977840BF3FD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFunction.Test", "MyFunction.Test\MyFunction.Test.csproj", "{34FE62DB-D61D-48DD-A135-02B7E455CA72}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFunction.Test", "src\MyFunction.Test\MyFunction.Test.csproj", "{34FE62DB-D61D-48DD-A135-02B7E455CA72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

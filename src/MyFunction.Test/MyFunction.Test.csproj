@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\MyRuleFunction\MyRuleFunction.csproj" />
+    <ProjectReference Include="..\MyRuleFunction\MyRuleFunction.csproj" />
   </ItemGroup>
 
 </Project>

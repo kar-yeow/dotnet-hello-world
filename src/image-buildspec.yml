@@ -46,7 +46,7 @@ reports:
     discard-paths: yes
     file-format: VISUALSTUDIOTRX
     files:
-      - MyApp.Test/TestResults/hello-world.trx
+      - src/MyApp.Test/TestResults/hello-world.trx
 
 artifacts:
   name: hello-$APP_VERSION
