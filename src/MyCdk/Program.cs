@@ -27,14 +27,14 @@ namespace MyCdk
 
             _ = new MyAppRunnerStack(app, "MyAppRunnerStack", new StackProps
             {
-                StackName = $"dass-build-template-stack",
+                StackName = $"dass-hello-apprunner-stack",
                 Env = env,
                 Synthesizer = synthesizer
             });
 
             _ = new MyFargateStack(app, "MyFargateStack", new StackProps
             {
-                StackName = $"dass-build-fargate-template-stack",
+                StackName = $"dass-hello-fargate-stack",
                 Env = env,
                 Synthesizer = synthesizer
             });

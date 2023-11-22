@@ -10,10 +10,10 @@
 
   <ItemGroup>
     <PackageReference Include="Amazon.Lambda" Version="0.12.0" />
-    <PackageReference Include="Amazon.Lambda.ConfigEvents" Version="2.0.0" />
-    <PackageReference Include="Amazon.Lambda.Core" Version="2.1.0" />
-    <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.3.1" />
-    <PackageReference Include="AWSSDK.ConfigService" Version="3.7.201.28" />
+    <PackageReference Include="Amazon.Lambda.ConfigEvents" Version="2.1.0" />
+    <PackageReference Include="Amazon.Lambda.Core" Version="2.2.0" />
+    <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.4.0" />
+    <PackageReference Include="AWSSDK.ConfigService" Version="3.7.203.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 

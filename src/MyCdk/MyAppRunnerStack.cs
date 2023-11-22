@@ -57,8 +57,8 @@ namespace MyCdk
                 InstanceConfiguration = new InstanceConfigurationProperty
                 {
                     InstanceRoleArn = instanceRole.RoleArn,
-                    Cpu = "1 vCPU", // "0.25 vCPU",
-                    Memory = "2 GB" // "0.5 GB"
+                    Cpu = "0.25 vCPU",
+                    Memory = "0.5 GB"
                 },
                 SourceConfiguration = new SourceConfigurationProperty
                 {
