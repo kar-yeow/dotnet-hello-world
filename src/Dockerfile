@@ -11,5 +11,5 @@ RUN yum install dotnet-sdk-6.0 -y
 COPY publish /app
 EXPOSE 5050
 #CMD opentelemetry-instrument dotnet /app/MyApp.dll --urls=http://0.0.0.0:5050
-dotnet /app/MyApp.dll --urls=http://0.0.0.0:5050
+CMD dotnet /app/MyApp.dll --urls=http://0.0.0.0:5050
 
