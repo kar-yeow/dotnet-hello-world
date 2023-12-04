@@ -10,7 +10,7 @@ namespace MyCdk
     {
         public MyAppRunnerStack(Construct scope, string id, IStackProps? props = null) : base(scope, id, props)
         {
-            var epmCode = new CfnParameter(this, "empcode", new CfnParameterProps
+            var epmCode = new CfnParameter(this, "epmcode", new CfnParameterProps
             {
                 Type = "String",
                 Description = "ATO project cost code",
@@ -51,6 +51,15 @@ namespace MyCdk
                 AddGrantsToResources = false
             });
 
+            var observability = new CfnObservabilityConfiguration(this, "MyXray", new CfnObservabilityConfigurationProps
+            {
+                ObservabilityConfigurationName = "dass-hello-observability",
+                TraceConfiguration = new CfnObservabilityConfiguration.TraceConfigurationProperty
+                {
+                    Vendor = "AWSXRAY"
+                }
+            });
+
             var appRunner = new CfnService(this, "MyAppRunnerService", new CfnServiceProps{
                 ServiceName = "dass-hello-apprunner-service",
                 AutoScalingConfigurationArn = autoScalingConfiguration.AttrAutoScalingConfigurationArn,
@@ -84,6 +93,11 @@ namespace MyCdk
                     UnhealthyThreshold = 5,
                     Timeout = 5,
                     Interval = 20,
+                },
+                ObservabilityConfiguration = new ServiceObservabilityConfigurationProperty
+                {
+                    ObservabilityConfigurationArn = observability.AttrObservabilityConfigurationArn,
+                    ObservabilityEnabled = true
                 }
             });
 

@@ -29,7 +29,7 @@ namespace MyCdk
             {
                 StackName = $"dass-hello-apprunner-stack",
                 Env = env,
-                Synthesizer = synthesizer
+                //Synthesizer = synthesizer
             });
 
             _ = new MyFargateStack(app, "MyFargateStack", new StackProps
