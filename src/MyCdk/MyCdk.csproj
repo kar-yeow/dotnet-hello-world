@@ -9,8 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="Amazon.CDK.Lib" Version="2.105.0" />
-    <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
-    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
 
 </Project>
