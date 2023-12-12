@@ -20,7 +20,7 @@ namespace MyCdk
 
             _ = new MyCodeBuildStack(app, "MyCodeBuildStack", new StackProps
             {
-                StackName = $"dass-build-image-stack",
+                StackName = "dass-build-image-stack",
                 Env = env,
                 Synthesizer = synthesizer
             });
@@ -34,21 +34,21 @@ namespace MyCdk
 
             _ = new MyFargateStack(app, "MyFargateStack", new StackProps
             {
-                StackName = $"dass-hello-fargate-stack",
+                StackName = "dass-hello-fargate-stack",
                 Env = env,
                 Synthesizer = synthesizer
             });
 
             _ = new MyFunctionStack(app, "MyFunctionStack", new StackProps
             {
-                StackName = $"dass-hello-function-stack",
+                StackName = "dass-hello-function-stack",
                 Env = env,
                 Synthesizer = synthesizer
             });
 
             _ = new MyDummyStack(app, "MyDummyStack", new StackProps
             {
-                StackName = $"dass-hello-dummy-stack",
+                StackName = "dass-hello-dummy-stack",
                 Env = env,
                 Synthesizer = synthesizer
             });
