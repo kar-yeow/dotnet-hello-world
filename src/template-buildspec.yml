@@ -9,16 +9,11 @@ phases:
       - pwd
       - cd src
       - dotnet build MyCdk
-      - dotnet test MyCdk.Test --logger "trx;LogFileName=mycdk.trx"
-      - cdk synth MyAppRunnerStack > my-apprunner-stack-template.yml
-
-reports:
-  hello-report-group:
-    discard-paths: yes
-    file-format: VISUALSTUDIOTRX
-    files:
-      - src/MyCdk.Test/TestResults/mycdk.trx
-
+      - cdk synth MyAppRunnerStack
+      - dir cdk.output
+  post_build:
+    commands:
+      - echo Saving to template to artifact S3 bucket ...
 artifacts:
   name: my-apprunner-stack-template
   discard-paths: yes

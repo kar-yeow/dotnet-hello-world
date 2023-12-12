@@ -2,9 +2,13 @@
 using Constructs;
 using Amazon.CDK.AWS.CodeBuild;
 using Amazon.CDK.AWS.S3;
+<<<<<<< HEAD
 using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.ECR;
 using Amazon.CDK.AWS.Logs;
+=======
+using Amazon.CDK.AWS.CodeStarNotifications;
+>>>>>>> master
 
 namespace MyCdk
 {

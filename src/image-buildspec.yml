@@ -24,9 +24,10 @@ phases:
       - cd src
       - dotnet build MyApp
       - dotnet test MyApp.Test --logger "trx;LogFileName=hello-world.trx"
-      - dotnet publish MyApp -c Release -p:UseAppHost=false -o publish
-      - echo Building the Docker image $NAME...          
-      - docker build -t $NAME .
+      - dotnet publish MyApp -c Releases -o publish
+      - name=dotnet-hello-world:0.0.1-$CODEBUILD_RESOLVED_SOURCE_VERSION
+      - echo Building the Docker image $name...          
+      - docker build -t $name .
   post_build:
     commands:
       - echo Build completed on `date`
@@ -49,8 +50,7 @@ reports:
       - src/MyApp.Test/TestResults/hello-world.trx
 
 artifacts:
-  name: hello-$APP_VERSION
-  discard-paths: yes
+  name: image tar file
   files:
     - src/hello-world.tar
     - src/MyApp.Test/TestResults/hello-world.trx

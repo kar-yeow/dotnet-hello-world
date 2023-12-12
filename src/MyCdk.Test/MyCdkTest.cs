@@ -15,11 +15,16 @@ namespace MyCdk.Test
             {
                 ["Environment"] = new Dictionary<string, object>
                 {
+<<<<<<< HEAD
                     ["ComputeType"] = "BUILD_GENERAL1_SMALL",
+=======
+                    ["ComputeType"] = "BUILD_GENERAL1_MEDIUM",
+>>>>>>> master
                     ["EnvironmentVariables"] = new Dictionary<string, object>[]
                     {
                         new Dictionary<string, object>
                         {
+<<<<<<< HEAD
                             ["Name"] = "AWS_DEFAULT_REGION",
                             ["Type"] = "PLAINTEXT"
                         },
@@ -30,12 +35,18 @@ namespace MyCdk.Test
                         },
                         new Dictionary<string, object>
                         {
+=======
+>>>>>>> master
                             ["Name"] = "EPM_CODE",
                             ["Type"] = "PLAINTEXT"
                         },
                         new Dictionary<string, object>
                         {
+<<<<<<< HEAD
                             ["Name"] = "APP_VERSION",
+=======
+                            ["Name"] = "SOFTWARE_VERSION",
+>>>>>>> master
                             ["Type"] = "PLAINTEXT"
                         },
                         new Dictionary<string, object>
@@ -62,7 +73,11 @@ namespace MyCdk.Test
             var template = Template.FromStack(stack);
             template.HasResourceProperties("AWS::AppRunner::Service", new Dictionary<string, object>
             {
+<<<<<<< HEAD
                 ["ServiceName"] = "dass-hello-apprunner-service",
+=======
+                ["ServiceName"] = "hello-world-app-runner-service",
+>>>>>>> master
                 ["SourceConfiguration"] = new Dictionary<string, object>
                 {
                     ["ImageRepository"] = new Dictionary<string, object>
