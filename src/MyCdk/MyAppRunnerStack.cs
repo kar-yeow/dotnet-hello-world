@@ -2,6 +2,7 @@
 using Constructs;
 using Amazon.CDK.AWS.AppRunner;
 using static Amazon.CDK.AWS.AppRunner.CfnService;
+using Amazon.CDK.AWS.IAM;
 
 namespace MyCdk
 {
@@ -9,31 +10,71 @@ namespace MyCdk
     {
         public MyAppRunnerStack(Construct scope, string id, IStackProps? props = null) : base(scope, id, props)
         {
-            var epmCode = new CfnParameter(this, "empcode", new CfnParameterProps
+            var epmCode = new CfnParameter(this, "epmcode", new CfnParameterProps
             {
                 Type = "String",
-                Description = "ATO project cost code"
+                Description = "ATO project cost code",
+                AllowedValues = new string[] { "ABC123", "EFG456" },
+                Default = "ABC123"
             });
             var appVersion = new CfnParameter(this, "version", new CfnParameterProps
             {
                 Type = "String",
-                Description = "Application software version to deploy"
+                Description = "Application software version to deploy",
+                AllowedValues = new string[] { "0.0.1", "0.0.2", "0.0.3" },
+                Default = "0.0.1"
             });
             Tags.SetTag("epmcode", epmCode.ValueAsString);
 
-            var autoScalingConfiguration = new CfnAutoScalingConfiguration(this, "app-runner-auto-scaling", new CfnAutoScalingConfigurationProps
+            var autoScalingConfiguration = new CfnAutoScalingConfiguration(this, "MyHelloAppRunnerAutoScaling", new CfnAutoScalingConfigurationProps
             {
-                AutoScalingConfigurationName = "my-auto-scaling",
+                AutoScalingConfigurationName = "dass-hello-auto-scaling",
                 MaxConcurrency = 100,
                 MaxSize = 25,
                 MinSize = 1
             });
+            var instanceRole = Role.FromRoleArn(this, 
+                    "AppRunnerInstanceRole",
+                    $"arn:aws:iam::{Account}:role/ato-role-dass-instance-apprunner",
+                    new FromRoleArnOptions
+            {
+                Mutable = false,
+                AddGrantsToResources = false
+            });
 
-            var appRunner = new CfnService(this, "app-runner-template", new CfnServiceProps{
-                ServiceName = "hello-world-app-runner-service",
+            var accessRole = Role.FromRoleArn(this, 
+                    "AppRunnerAccessRole",
+                    $"arn:aws:iam::{Account}:role/ato-role-dass-ecr",
+                    new FromRoleArnOptions
+            {
+                Mutable = false,
+                AddGrantsToResources = false
+            });
+
+            var observability = new CfnObservabilityConfiguration(this, "MyXray", new CfnObservabilityConfigurationProps
+            {
+                ObservabilityConfigurationName = "dass-hello-observability",
+                TraceConfiguration = new CfnObservabilityConfiguration.TraceConfigurationProperty
+                {
+                    Vendor = "AWSXRAY"
+                }
+            });
+
+            var appRunner = new CfnService(this, "MyAppRunnerService", new CfnServiceProps{
+                ServiceName = "dass-hello-apprunner-service",
                 AutoScalingConfigurationArn = autoScalingConfiguration.AttrAutoScalingConfigurationArn,
+                InstanceConfiguration = new InstanceConfigurationProperty
+                {
+                    InstanceRoleArn = instanceRole.RoleArn,
+                    Cpu = "0.25 vCPU",
+                    Memory = "0.5 GB"
+                },
                 SourceConfiguration = new SourceConfigurationProperty
                 {
+                    AuthenticationConfiguration = new AuthenticationConfigurationProperty 
+                    {
+                        AccessRoleArn = accessRole.RoleArn
+                    },
                     ImageRepository = new ImageRepositoryProperty
                     {
                         ImageIdentifier = $"{this.Account}.dkr.ecr.{this.Region}.amazonaws.com/dotnet-hello-world:{appVersion.ValueAsString}",
@@ -48,14 +89,19 @@ namespace MyCdk
                 {
                     Protocol = "HTTP",
                     Path = "/",
-                    HealthyThreshold = 1,
+                    HealthyThreshold = 2,
                     UnhealthyThreshold = 5,
-                    Timeout = 2,
-                    Interval = 10,
+                    Timeout = 5,
+                    Interval = 20,
+                },
+                ObservabilityConfiguration = new ServiceObservabilityConfigurationProperty
+                {
+                    ObservabilityConfigurationArn = observability.AttrObservabilityConfigurationArn,
+                    ObservabilityEnabled = true
                 }
             });
 
-            new CfnOutput(this, "app runner template", new CfnOutputProps
+            new CfnOutput(this, "MyAppRunnerStackOutput", new CfnOutputProps
             {
                 Value = $"{appRunner.ServiceName} {appRunner.Stack.StackId} {appRunner.AttrServiceUrl} done."
             });

@@ -3,53 +3,55 @@ version: 0.2
 env:
   variables:
     APP_VERSION: 0.0.1
-  parameter-store:
-    ARTIFACTORY_USER: arn:aws:ssm:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:parameter/UserName
-  secrets-manager:
-    ARTIFACTORY_TOKEN: arn:aws:secretsmanager:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:secret:secrets-name:TOKEN
 
 phases:
   install:
-    commands:
-      - dnf install dotnet-sdk-6.0
+    runtime-versions:
+      dotnet: 6.0
   pre_build:
     commands:
-      - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - ECR_HOST=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - ECR_REPO=$ECR_HOST
+      - SNS_TOPIC=arn:aws:sns:$AWS_DEFAULT_REGION:$AWS_ACCOUNT_ID:dass-hello-topic
+      - NAME=dotnet-hello-world:$APP_VERSION-$CODEBUILD_RESOLVED_SOURCE_VERSION
+      - TAGNAME=dotnet-hello-world:$APP_VERSION 
+      - echo $AWS_DEFAULT_REGION $AWS_ACCOUNT_ID 
+      - echo $ECR_REPO $SNS_TOPIC
+
   build:
     commands:
       - echo Build started on `date`
-      - echo dummy user=$ARTIFACTORY_USER token=$ARTIFACTORY_TOKEN...
       - cd src
       - dotnet build MyApp
       - dotnet test MyApp.Test --logger "trx;LogFileName=hello-world.trx"
-      - dotnet publish MyApp -c Release -p:UseAppHost=false -o publish
-      - name=dotnet-hello-world:$APP_VERSION-$CODEBUILD_RESOLVED_SOURCE_VERSION
+      - dotnet publish MyApp -c Releases -o publish
+      - name=dotnet-hello-world:0.0.1-$CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Building the Docker image $name...          
       - docker build -t $name .
   post_build:
     commands:
       - echo Build completed on `date`
-      - echo Pushing the Docker image $name...
+      - echo Pushing the Docker image $NAME...
+      - docker save $NAME -o hello-world.tar 
       - |
         if [ $SAVE_IMAGE = "true" ]; then
-          docker tag $name $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$name
-          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$name
-          docker save $name -o hello-world.tar 
+          echo Logging in to Amazon ECR...
+          aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_HOST
+          docker tag $NAME $ECR_REPO/$TAGNAME
+          docker push $ECR_REPO/$TAGNAME
         fi 
-    finally:
-      - |
-        if [ $SAVE_IMAGE != "true"]; then
-          docker rmi $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$name
-        fi
+#      - aws sns publish --topic-arn ${SNS_TOPIC} --message "Build ${CODEBUILD_BUILD_ID} done."
 
 reports:
-  hello-report-group:
+  codebuild-report-group:
+    discard-paths: yes
+    file-format: VISUALSTUDIOTRX
     files:
-      - hello-world.trx
+      - src/MyApp.Test/TestResults/hello-world.trx
 
 artifacts:
-  name: hello-$APP_VERSION
+  name: image tar file
   files:
-    - hello-world.tar
+    - src/hello-world.tar
+    - src/MyApp.Test/TestResults/hello-world.trx
     
